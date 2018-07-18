@@ -16,11 +16,11 @@ import com.sbschoolcode.bakingapp.services.IsDatabaseInitializedService;
 public class ServiceController {
 
     private static ServiceController mServiceControllerInstance;
-    private BroadcastReceiver mMainControllerReceiver;
+    private BroadcastReceiver mServiceControllerReceiver;
     private IntentFilter mIntentFilter;
 
     private ServiceController() {
-        mMainControllerReceiver = new MainControllerReceiver();
+        mServiceControllerReceiver = new ServiceControllerReceiver();
         mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(DownloadHttpService.ACTION_HTTP_RESULT);
         mIntentFilter.addAction(InsertRecipesService.ACTION_RECIPES_INSERTED);
@@ -34,11 +34,11 @@ public class ServiceController {
     }
 
     public void registerReceiver(Context context) {
-        context.registerReceiver(mMainControllerReceiver, mIntentFilter);
+        context.registerReceiver(mServiceControllerReceiver, mIntentFilter);
     }
 
     public void unregisterReceiver(Context context) {
-        context.unregisterReceiver(mMainControllerReceiver);
+        context.unregisterReceiver(mServiceControllerReceiver);
     }
 
     public void startQueryRecipeItem(Context context, Intent intent) {
@@ -58,9 +58,9 @@ public class ServiceController {
         IsDatabaseInitializedService.enqueueWork(context, IsDatabaseInitializedService.class, AppConstants.IS_DB_INITIALIZED_JOB_ID, emptyIntent);
     }
 
-    public class MainControllerReceiver extends BroadcastReceiver {
+    public class ServiceControllerReceiver extends BroadcastReceiver {
 
-        public MainControllerReceiver() {
+        public ServiceControllerReceiver() {
         }
 
         @Override
