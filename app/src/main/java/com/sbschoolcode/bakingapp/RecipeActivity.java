@@ -14,7 +14,6 @@ import android.widget.Toast;
 import com.sbschoolcode.bakingapp.controllers.ServiceController;
 import com.sbschoolcode.bakingapp.fragments.SelectAStep;
 import com.sbschoolcode.bakingapp.models.Recipe;
-import com.sbschoolcode.bakingapp.services.GetRecipeItemService;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -50,12 +49,12 @@ public class RecipeActivity extends AppCompatActivity {
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         mCurrentBundle = new Bundle();
-        mCurrentBundle.putParcelable(AppConstants.BUNDLE_EXTRA_RECIPE,
-                savedInstanceState.getParcelable(AppConstants.BUNDLE_EXTRA_RECIPE));
-        mCurrentBundle.putParcelableArrayList(AppConstants.BUNDLE_EXTRA_INGREDIENTS_LIST,
-                savedInstanceState.getParcelableArrayList(AppConstants.BUNDLE_EXTRA_INGREDIENTS_LIST));
-        mCurrentBundle.putParcelableArrayList(AppConstants.BUNDLE_EXTRA_STEPS_LIST,
-                savedInstanceState.getParcelableArrayList(AppConstants.BUNDLE_EXTRA_STEPS_LIST));
+        mCurrentBundle.putParcelable(AppConstants.INTENT_EXTRA_RECIPE,
+                savedInstanceState.getParcelable(AppConstants.INTENT_EXTRA_RECIPE));
+        mCurrentBundle.putParcelableArrayList(AppConstants.INTENT_EXTRA_INGREDIENTS_LIST,
+                savedInstanceState.getParcelableArrayList(AppConstants.INTENT_EXTRA_INGREDIENTS_LIST));
+        mCurrentBundle.putParcelableArrayList(AppConstants.INTENT_EXTRA_STEPS_LIST,
+                savedInstanceState.getParcelableArrayList(AppConstants.INTENT_EXTRA_STEPS_LIST));
     }
 
     @Override
@@ -94,7 +93,7 @@ public class RecipeActivity extends AppCompatActivity {
             if (intent.getAction() == null) return;
 
             if (intent.getAction().equals(ACTION_RECIPE_QUERIED)) {
-                Recipe recipe = intent.getParcelableExtra(AppConstants.BUNDLE_EXTRA_RECIPE);
+                Recipe recipe = intent.getParcelableExtra(AppConstants.INTENT_EXTRA_RECIPE);
                 if (recipe == null) onError();
                 else {
                     Log.v(AppConstants.TESTING, "Recipe received, recipe name = " + recipe);

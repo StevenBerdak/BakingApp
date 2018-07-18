@@ -3,7 +3,6 @@ package com.sbschoolcode.bakingapp.services;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.JobIntentService;
 import android.util.Log;
@@ -54,9 +53,9 @@ public class GetRecipeItemService extends JobIntentService {
         }
 
         Intent broadcastRecipeIntent = new Intent(RecipeActivity.ACTION_RECIPE_QUERIED);
-        broadcastRecipeIntent.putExtra(AppConstants.BUNDLE_EXTRA_RECIPE, recipe);
-        broadcastRecipeIntent.putParcelableArrayListExtra(AppConstants.BUNDLE_EXTRA_INGREDIENTS_LIST, ingredients);
-        broadcastRecipeIntent.putParcelableArrayListExtra(AppConstants.BUNDLE_EXTRA_STEPS_LIST, steps);
+        broadcastRecipeIntent.putExtra(AppConstants.INTENT_EXTRA_RECIPE, recipe);
+        broadcastRecipeIntent.putParcelableArrayListExtra(AppConstants.INTENT_EXTRA_INGREDIENTS_LIST, ingredients);
+        broadcastRecipeIntent.putParcelableArrayListExtra(AppConstants.INTENT_EXTRA_STEPS_LIST, steps);
 
         sendBroadcast(broadcastRecipeIntent);
     }

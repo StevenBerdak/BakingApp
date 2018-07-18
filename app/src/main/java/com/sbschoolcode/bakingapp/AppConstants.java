@@ -10,8 +10,8 @@ public class AppConstants {
     public static final int RECIPE_LOADER_ID = 1010;
     public static final String FRAGMENT_SELECT_A_STEP_TAG = "fragment_select_a_step_tag";
     public static final String INTENT_EXTRA_RECIPE_API_INDEX = "intent_extra_recipe";
-    public static final String BUNDLE_EXTRA_INGREDIENTS_LIST = "bundle_extra_ingredients_list";
-    public static final String BUNDLE_EXTRA_STEPS_LIST = "bundle_extra_steps_list";
-    public static final String BUNDLE_EXTRA_RECIPE = "bundle_extra_recipe";
+    public static final String INTENT_EXTRA_INGREDIENTS_LIST = "bundle_extra_ingredients_list";
+    public static final String INTENT_EXTRA_STEPS_LIST = "bundle_extra_steps_list";
+    public static final String INTENT_EXTRA_RECIPE = "bundle_extra_recipe";
     public static final String TESTING = "TESTING";
 }

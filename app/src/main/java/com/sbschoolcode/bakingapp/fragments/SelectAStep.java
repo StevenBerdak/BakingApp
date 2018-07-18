@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.sbschoolcode.bakingapp.AppConstants;
 import com.sbschoolcode.bakingapp.AppUtils;
@@ -17,7 +16,6 @@ import com.sbschoolcode.bakingapp.R;
 import com.sbschoolcode.bakingapp.models.Step;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class SelectAStep extends Fragment {
 
@@ -38,7 +36,7 @@ public class SelectAStep extends Fragment {
             AppUtils.makeToast(getContext(), getString(R.string.error_recipe_data));
             getActivity().getSupportFragmentManager().popBackStack();
         } else {
-            mStepsArrayList = getArguments().getParcelableArrayList(AppConstants.BUNDLE_EXTRA_STEPS_LIST);
+            mStepsArrayList = getArguments().getParcelableArrayList(AppConstants.INTENT_EXTRA_STEPS_LIST);
             if (mStepsArrayList == null || mStepsArrayList.size() == 0) {
                 AppUtils.makeToast(getContext(), getString(R.string.error_recipe_data));
                 getActivity().getSupportFragmentManager().popBackStack();
