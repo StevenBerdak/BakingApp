@@ -11,8 +11,8 @@ public class Recipe implements Parcelable {
     public final int apiId;
     public final String name;
     public final int servings;
-    public ArrayList<Ingredient> ingredients;
-    public ArrayList<Step> steps;
+    public final ArrayList<Ingredient> ingredients;
+    public final ArrayList<Step> steps;
 
     public Recipe(int apiId, String name, int servings) {
         this.apiId = apiId;
