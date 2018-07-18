@@ -16,11 +16,11 @@ import com.sbschoolcode.bakingapp.services.IsDatabaseInitializedService;
 public class ServiceController {
 
     private static ServiceController mServiceControllerInstance;
-    private BroadcastReceiver mHttpReceiver;
+    private BroadcastReceiver mMainControllerReceiver;
     private IntentFilter mIntentFilter;
 
     private ServiceController() {
-        mHttpReceiver = new MainControllerReceiver();
+        mMainControllerReceiver = new MainControllerReceiver();
         mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(DownloadHttpService.ACTION_HTTP_RESULT);
         mIntentFilter.addAction(InsertRecipesService.ACTION_RECIPES_INSERTED);
@@ -33,12 +33,12 @@ public class ServiceController {
         return mServiceControllerInstance;
     }
 
-    public void prepareHttpReceiver(Context context) {
-        context.registerReceiver(mHttpReceiver, mIntentFilter);
+    public void registerReceiver(Context context) {
+        context.registerReceiver(mMainControllerReceiver, mIntentFilter);
     }
 
-    public void releaseHttpReceiver(Context context) {
-        context.unregisterReceiver(mHttpReceiver);
+    public void unregisterReceiver(Context context) {
+        context.unregisterReceiver(mMainControllerReceiver);
     }
 
     public void startQueryRecipeItem(Context context, Intent intent) {
