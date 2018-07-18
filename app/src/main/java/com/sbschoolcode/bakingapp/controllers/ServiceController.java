@@ -33,11 +33,11 @@ public class ServiceController {
         return mServiceControllerInstance;
     }
 
-    public void addReceiver(Context context) {
+    public void prepareHttpReceiver(Context context) {
         context.registerReceiver(mHttpReceiver, mIntentFilter);
     }
 
-    public void removeReceiver(Context context) {
+    public void releaseHttpReceiver(Context context) {
         context.unregisterReceiver(mHttpReceiver);
     }
 
