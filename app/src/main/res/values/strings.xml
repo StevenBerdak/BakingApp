@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">BakingApp</string>
+    <string name="name_placeholder">Name Placeholder</string>
+    <string name="error_http">Error performing http request</string>
+    <string name="error_json">Error parsing Json data</string>
+    <string name="error_loading_recipe">Could not load recipe</string>
+    <string name="error_unrecoverable">An unrecoverable error occurred</string>
+    <string name="error_recipe_data">Failed to load recipe data</string>
+</resources>
