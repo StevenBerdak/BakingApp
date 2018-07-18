@@ -57,14 +57,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     protected void onResume() {
         super.onResume();
-        mServiceController.addReceiver(this);
+        mServiceController.registerReceiver(this);
         registerReceiver(mMainReceiver, mMainIntentFilter);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mServiceController.removeReceiver(this);
+        mServiceController.unregisterReceiver(this);
         unregisterReceiver(mMainReceiver);
     }
 
