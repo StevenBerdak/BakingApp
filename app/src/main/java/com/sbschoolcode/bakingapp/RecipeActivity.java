@@ -16,9 +16,12 @@ import com.sbschoolcode.bakingapp.fragments.SelectAStep;
 import com.sbschoolcode.bakingapp.models.Recipe;
 import com.sbschoolcode.bakingapp.services.GetRecipeItemService;
 
+import butterknife.BindView;
+
 public class RecipeActivity extends AppCompatActivity {
 
     public static final String ACTION_RECIPE_QUERIED = "com.sbschoolcode.broadcast.RECIPE_QUERIED";
+    @BindView(R.id.content_frame)
     private FrameLayout mContentFrame;
     private ServiceController mServiceController;
     private BroadcastReceiver mRecipeReceiver;
@@ -31,8 +34,6 @@ public class RecipeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_recipe);
         initReceiver();
         mServiceController = ServiceController.getInstance();
-
-        mContentFrame = findViewById(R.id.content_frame);
 
         if (savedInstanceState == null) mServiceController.startQueryRecipeItem(this, getIntent());
     }

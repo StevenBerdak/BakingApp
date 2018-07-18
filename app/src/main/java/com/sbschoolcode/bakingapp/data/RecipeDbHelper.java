@@ -11,7 +11,7 @@ import com.sbschoolcode.bakingapp.data.DbContract.StepsEntry;
 public class RecipeDbHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "recipes_database";
-    private static final int DATABASE_VERSION = 14;
+    private static final int DATABASE_VERSION = 15;
 
     private static final String CREATE_RECIPES_TABLE =
             "CREATE TABLE " + RecipesEntry.TABLE_NAME + " (" +
