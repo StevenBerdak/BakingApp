@@ -17,12 +17,13 @@ import com.sbschoolcode.bakingapp.models.Recipe;
 import com.sbschoolcode.bakingapp.services.GetRecipeItemService;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class RecipeActivity extends AppCompatActivity {
 
     public static final String ACTION_RECIPE_QUERIED = "com.sbschoolcode.broadcast.RECIPE_QUERIED";
     @BindView(R.id.content_frame)
-    private FrameLayout mContentFrame;
+    FrameLayout mContentFrame;
     private ServiceController mServiceController;
     private BroadcastReceiver mRecipeReceiver;
     private IntentFilter mRecipeIntentFilter;
@@ -32,6 +33,7 @@ public class RecipeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe);
+        ButterKnife.bind(this);
         initReceiver();
         mServiceController = ServiceController.getInstance();
 
@@ -97,7 +99,8 @@ public class RecipeActivity extends AppCompatActivity {
                 else {
                     Log.v(AppConstants.TESTING, "Recipe received, recipe name = " + recipe);
                     SelectAStep fragment = new SelectAStep();
-                    fragment.setArguments(intent.getExtras());
+                    mCurrentBundle = intent.getExtras();
+                    fragment.setArguments(mCurrentBundle);
                     addFragment(fragment, AppConstants.FRAGMENT_SELECT_A_STEP_TAG);
                 }
             }
