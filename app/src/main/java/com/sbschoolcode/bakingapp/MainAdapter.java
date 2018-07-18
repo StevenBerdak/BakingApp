@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.sbschoolcode.bakingapp.data.DbContract;
 
-public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder> implements View.OnClickListener {
+public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> implements View.OnClickListener {
 
     private Cursor mCursor;
 

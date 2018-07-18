@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private ServiceController mServiceController;
     @BindView(R.id.recipe_list_recycler_view)
     RecyclerView mRecipeListRecyclerView;
-    private RecipeAdapter mRecipeAdapter;
+    private MainAdapter mMainAdapter;
     private BroadcastReceiver mMainReceiver;
     private IntentFilter mMainIntentFilter;
 
@@ -44,14 +44,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mServiceController = ServiceController.getInstance();
         mServiceController.initDownloadOrSkip(this);
 
-        mRecipeAdapter = new RecipeAdapter();
+        mMainAdapter = new MainAdapter();
         //Todo: need to be responsive for phone vs tablet
         GridLayoutManager mGridLayoutManager = new GridLayoutManager(this, 1);
         /* Init view components. */
 
         mRecipeListRecyclerView = findViewById(R.id.recipe_list_recycler_view);
         mRecipeListRecyclerView.setLayoutManager(mGridLayoutManager);
-        mRecipeListRecyclerView.setAdapter(mRecipeAdapter);
+        mRecipeListRecyclerView.setAdapter(mMainAdapter);
     }
 
     @Override
@@ -87,12 +87,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public void onLoadFinished(@NonNull Loader loader, Cursor data) {
         Log.v("TESTING", "Loader load finished");
         data.setNotificationUri(getContentResolver(),DataUtils.getContentUri(DbContract.CONTENT_PROVIDER_AUTHORITY, DbContract.RecipesEntry.TABLE_NAME));
-        mRecipeAdapter.swapCursor(data);
+        mMainAdapter.swapCursor(data);
     }
 
     @Override
     public void onLoaderReset(@NonNull Loader<Cursor> loader) {
-        mRecipeAdapter.swapCursor(null);
+        mMainAdapter.swapCursor(null);
     }
 
     private class MainReceiver extends BroadcastReceiver {
