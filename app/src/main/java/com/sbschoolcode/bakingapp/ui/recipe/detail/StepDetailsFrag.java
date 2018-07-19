@@ -98,15 +98,16 @@ public class StepDetailsFrag extends Fragment {
 
     public void prepareExoPlayer(String url) {
         MediaSource mediaSource;
-        ExtractorMediaSource.Factory mediaSourceFactory =
-                new ExtractorMediaSource.Factory(new DefaultHttpDataSourceFactory(Util.getUserAgent(getContext(), AppConstants.APP_NAME)))
-                        .setExtractorsFactory(Mp4Extractor.FACTORY);
+        DefaultHttpDataSourceFactory factory =
+                new DefaultHttpDataSourceFactory(Util.getUserAgent(getContext(), AppConstants.APP_NAME));
         if (getActivity() != null)
-            mediaSource =
-                    new ExtractorMediaSource.Factory(new CacheDataSourceFactory(new SimpleCache(getActivity().getCacheDir(), new NoOpCacheEvictor()),
-                            new DefaultHttpDataSourceFactory(Util.getUserAgent(getContext(), AppConstants.APP_NAME)))).createMediaSource(Uri.parse(url));
+            mediaSource = new ExtractorMediaSource.Factory(
+                            new CacheDataSourceFactory(
+                                    new SimpleCache(getActivity().getCacheDir(),
+                                            new NoOpCacheEvictor()),
+                            factory)).createMediaSource(Uri.parse(url));
         else
-            mediaSource = mediaSourceFactory.createMediaSource(Uri.parse(url));
+            mediaSource = new ExtractorMediaSource.Factory(factory).createMediaSource(Uri.parse(url));
         mExoPlayer.prepare(mediaSource);
         mExoPlayer.setPlayWhenReady(true);
     }
