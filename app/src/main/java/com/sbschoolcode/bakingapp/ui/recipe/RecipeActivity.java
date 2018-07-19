@@ -1,19 +1,20 @@
-package com.sbschoolcode.bakingapp;
+package com.sbschoolcode.bakingapp.ui.recipe;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.sbschoolcode.bakingapp.AppConstants;
+import com.sbschoolcode.bakingapp.R;
 import com.sbschoolcode.bakingapp.controllers.ServiceController;
-import com.sbschoolcode.bakingapp.fragments.SelectAStep;
 import com.sbschoolcode.bakingapp.models.Recipe;
+import com.sbschoolcode.bakingapp.ui.recipe.steps.SelectStepFrag;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -23,7 +24,6 @@ public class RecipeActivity extends AppCompatActivity {
     public static final String ACTION_RECIPE_QUERIED = "com.sbschoolcode.broadcast.RECIPE_QUERIED";
     @BindView(R.id.content_frame)
     FrameLayout mContentFrame;
-    private ServiceController mServiceController;
     private BroadcastReceiver mRecipeReceiver;
     private IntentFilter mRecipeIntentFilter;
     private Bundle mCurrentBundle;
@@ -34,9 +34,9 @@ public class RecipeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_recipe);
         ButterKnife.bind(this);
         initReceiver();
-        mServiceController = ServiceController.getInstance();
 
-        if (savedInstanceState == null) mServiceController.startQueryRecipeItem(this, getIntent());
+        if (savedInstanceState == null)
+            ServiceController.getInstance().startQueryRecipeItem(this, getIntent());
     }
 
     @Override
@@ -57,6 +57,13 @@ public class RecipeActivity extends AppCompatActivity {
                 savedInstanceState.getParcelableArrayList(AppConstants.INTENT_EXTRA_STEPS_LIST));
     }
 
+    private void loadSteps() {
+        SelectStepFrag fragment = new SelectStepFrag();
+        fragment.setArguments(mCurrentBundle);
+        getSupportFragmentManager().beginTransaction()
+                .replace(mContentFrame.getId(), fragment, AppConstants.FRAGMENT_SELECT_A_STEP_TAG).commit();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -69,9 +76,13 @@ public class RecipeActivity extends AppCompatActivity {
         unregisterReceiver(mRecipeReceiver);
     }
 
-    void addFragment(Fragment fragment, String tag) {
-        Log.v(AppConstants.TESTING, "Fragment " + tag + " added");
-        getSupportFragmentManager().beginTransaction().add(mContentFrame.getId(), fragment, tag).commit();
+    @Override
+    public boolean onSupportNavigateUp() {
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStack();
+            return true;
+        }
+        return super.onSupportNavigateUp();
     }
 
     private void initReceiver() {
@@ -97,10 +108,8 @@ public class RecipeActivity extends AppCompatActivity {
                 if (recipe == null) onError();
                 else {
                     Log.v(AppConstants.TESTING, "Recipe received, recipe name = " + recipe);
-                    SelectAStep fragment = new SelectAStep();
                     mCurrentBundle = intent.getExtras();
-                    fragment.setArguments(mCurrentBundle);
-                    addFragment(fragment, AppConstants.FRAGMENT_SELECT_A_STEP_TAG);
+                    loadSteps();
                 }
             }
         }

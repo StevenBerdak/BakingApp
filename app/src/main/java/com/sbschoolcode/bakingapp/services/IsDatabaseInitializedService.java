@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.JobIntentService;
 import android.util.Log;
 
-import com.sbschoolcode.bakingapp.MainActivity;
+import com.sbschoolcode.bakingapp.ui.MainActivity;
 import com.sbschoolcode.bakingapp.data.DataUtils;
 import com.sbschoolcode.bakingapp.data.DbContract;
 

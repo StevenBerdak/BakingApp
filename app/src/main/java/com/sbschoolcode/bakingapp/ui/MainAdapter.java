@@ -1,4 +1,4 @@
-package com.sbschoolcode.bakingapp;
+package com.sbschoolcode.bakingapp.ui;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -10,20 +10,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.sbschoolcode.bakingapp.AppConstants;
+import com.sbschoolcode.bakingapp.R;
+import com.sbschoolcode.bakingapp.ui.recipe.RecipeActivity;
 import com.sbschoolcode.bakingapp.data.DbContract;
 
-public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> implements View.OnClickListener {
+public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
     private Cursor mCursor;
-
-    @Override
-    public void onClick(View v) {
-        Log.v("TESTING", "Item clicked = " + v.getTag());
-        Intent recipeActivity = new Intent(v.getContext(),
-                RecipeActivity.class).putExtra(AppConstants.INTENT_EXTRA_RECIPE_API_INDEX,
-                (int) v.getTag());
-        v.getContext().startActivity(recipeActivity);
-    }
+    private View.OnClickListener mClickListener;
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -36,11 +31,15 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> im
         }
     }
 
+    MainAdapter(View.OnClickListener clickListener) {
+        this.mClickListener = clickListener;
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recipe_list_item, parent, false);
-        view.setOnClickListener(this);
+        view.setOnClickListener(mClickListener);
         return new ViewHolder(view);
     }
 

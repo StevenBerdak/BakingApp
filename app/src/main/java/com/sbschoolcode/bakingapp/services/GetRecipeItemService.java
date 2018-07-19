@@ -8,7 +8,7 @@ import android.support.v4.app.JobIntentService;
 import android.util.Log;
 
 import com.sbschoolcode.bakingapp.AppConstants;
-import com.sbschoolcode.bakingapp.RecipeActivity;
+import com.sbschoolcode.bakingapp.ui.recipe.RecipeActivity;
 import com.sbschoolcode.bakingapp.data.DataUtils;
 import com.sbschoolcode.bakingapp.data.DbContract;
 import com.sbschoolcode.bakingapp.models.Ingredient;

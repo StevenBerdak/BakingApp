@@ -30,6 +30,7 @@ public class DownloadHttpService extends JobIntentService {
 
             Intent broadcastHttpResult = new Intent(ACTION_HTTP_RESULT);
             broadcastHttpResult.putExtra(EXTRA_OUT_HTTP_RESULT, httpData);
+            //TODO: check if null, send error broadcast
             sendBroadcast(broadcastHttpResult);
         } catch (IOException e) {
             e.printStackTrace();
@@ -39,10 +40,10 @@ public class DownloadHttpService extends JobIntentService {
 
     private String downloadHttpData(String requestUrl) throws IOException {
         OkHttpClient httpClient = new OkHttpClient();
-        Request request = new Request.Builder().url(requestUrl).build();
+        Request request = new Request.Builder().url(requestUrl).get().build();
         Response response = httpClient.newCall(request).execute();
 
-        if (response != null) {
+        if (response != null && response.code() == 200) {
             ResponseBody responseBody = response.body();
 
             if (responseBody != null) {
@@ -50,6 +51,7 @@ public class DownloadHttpService extends JobIntentService {
             }
         }
 
-        throw new IOException();
+        Log.e(getClass().getSimpleName(), getString(R.string.error_http_download));
+        return null;
     }
 }

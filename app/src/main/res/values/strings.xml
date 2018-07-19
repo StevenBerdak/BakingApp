@@ -6,4 +6,7 @@
     <string name="error_loading_recipe">Could not load recipe</string>
     <string name="error_unrecoverable">An unrecoverable error occurred</string>
     <string name="error_recipe_data">Failed to load recipe data</string>
+    <string name="error_loading_step_model">Could not load step model</string>
+    <string name="error_http_download">Http download error</string>
+    <string name="error_video_file">Error downloading video file</string>
 </resources>
