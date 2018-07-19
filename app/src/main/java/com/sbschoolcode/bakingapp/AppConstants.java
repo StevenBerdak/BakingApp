@@ -19,4 +19,5 @@ public class AppConstants {
     public static final String BUNDLE_EXTRA_STEP_MODEL = "bundle_extra_step_model";
 
     public static final String TESTING = "TESTING";
+    public static final String APP_NAME = "BakingApp";
 }

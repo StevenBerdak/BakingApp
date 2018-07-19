@@ -9,4 +9,8 @@
     <string name="error_loading_step_model">Could not load step model</string>
     <string name="error_http_download">Http download error</string>
     <string name="error_video_file">Error downloading video file</string>
+    <string name="button_desc_rewind">rewind button</string>
+    <string name="button_desc_play">play button</string>
+    <string name="button_desc_pause">pause button</string>
+    <string name="button_desc_forward">forward button</string>
 </resources>

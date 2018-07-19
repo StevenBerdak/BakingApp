@@ -1,10 +1,16 @@
 package com.sbschoolcode.bakingapp;
 
 import android.content.Context;
+import android.net.Uri;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.android.exoplayer2.C;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -74,14 +80,14 @@ public class AppUtils {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Log.w(LOG_TAG,"Error tidying string: " + input);
+            Log.w(LOG_TAG, "Error tidying string:" + input);
             return TextUtils.join(" ", words);
         }
 
         return TextUtils.join(" ", words);
     }
 
-    public static void testShiv() {
-        Log.v(AppConstants.TESTING, "true");
+    public static void testShiv(Class cls) {
+        Log.v(AppConstants.TESTING, "true, location = " + cls.getSimpleName());
     }
 }

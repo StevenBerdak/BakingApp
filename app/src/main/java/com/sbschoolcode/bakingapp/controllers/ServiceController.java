@@ -33,29 +33,29 @@ public class ServiceController {
         return mServiceControllerInstance;
     }
 
-    public void registerReceiver(Context context) {
-        context.registerReceiver(mServiceControllerReceiver, mIntentFilter);
+    public void registerReceiver(Context ctx) {
+        ctx.registerReceiver(mServiceControllerReceiver, mIntentFilter);
     }
 
-    public void unregisterReceiver(Context context) {
-        context.unregisterReceiver(mServiceControllerReceiver);
+    public void unregisterReceiver(Context ctx) {
+        ctx.unregisterReceiver(mServiceControllerReceiver);
     }
 
-    public void startQueryRecipeItem(Context context, Intent intent) {
-        GetRecipeItemService.enqueueWork(context, GetRecipeItemService.class,
+    public void startQueryRecipeItem(Context ctx, Intent intent) {
+        GetRecipeItemService.enqueueWork(ctx, GetRecipeItemService.class,
                 AppConstants.GET_RECIPE_ITEM_JOB_ID, intent);
     }
 
-    public void startDownloadJsonData(Context context) {
+    public void startDownloadJsonData(Context ctx) {
         Log.v("TESTING", "Start download service called");
-        Intent intent = new Intent(context, DownloadHttpService.class);
+        Intent intent = new Intent(ctx, DownloadHttpService.class);
         intent.putExtra(DownloadHttpService.EXTRA_IN_REQUEST_URL, AppConstants.RECIPES_URL);
-        DownloadHttpService.enqueueWork(context, DownloadHttpService.class, AppConstants.HTTP_DOWNLOAD_JOB_ID, intent);
+        DownloadHttpService.enqueueWork(ctx, DownloadHttpService.class, AppConstants.HTTP_DOWNLOAD_JOB_ID, intent);
     }
 
-    public void initDownloadOrSkip(Context context) {
-        Intent emptyIntent = new Intent();
-        IsDatabaseInitializedService.enqueueWork(context, IsDatabaseInitializedService.class, AppConstants.IS_DB_INITIALIZED_JOB_ID, emptyIntent);
+    public void initDownloadOrSkip(Context ctx) {
+        Intent intent = new Intent();
+        IsDatabaseInitializedService.enqueueWork(ctx, IsDatabaseInitializedService.class, AppConstants.IS_DB_INITIALIZED_JOB_ID, intent);
     }
 
     public class ServiceControllerReceiver extends BroadcastReceiver {
@@ -64,7 +64,7 @@ public class ServiceController {
         }
 
         @Override
-        public void onReceive(Context context, Intent intent) {
+        public void onReceive(Context ctx, Intent intent) {
 
             String action = intent.getAction();
 
@@ -80,11 +80,11 @@ public class ServiceController {
                     return;
                 }
 
-                Intent insertRecipesIntent = new Intent(context, InsertRecipesService.class);
+                Intent insertRecipesIntent = new Intent(ctx, InsertRecipesService.class);
                 insertRecipesIntent.putExtra(InsertRecipesService.EXTRA_IN_JSON_DATA, jsonData);
-                InsertRecipesService.enqueueWork(context, InsertRecipesService.class, AppConstants.INSERT_RECIPES_JOB_ID, insertRecipesIntent);
+                InsertRecipesService.enqueueWork(ctx, InsertRecipesService.class, AppConstants.INSERT_RECIPES_JOB_ID, insertRecipesIntent);
             } else if (action.equals(InsertRecipesService.ACTION_RECIPES_INSERTED)) {
-                context.sendBroadcast(new Intent(MainActivity.ACTION_INIT_LOADER));
+                ctx.sendBroadcast(new Intent(MainActivity.ACTION_INIT_LOADER));
             }
         }
     }
