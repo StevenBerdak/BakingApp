@@ -14,4 +14,7 @@
     <string name="button_desc_pause">pause button</string>
     <string name="button_desc_forward">forward button</string>
     <string name="step_image_desc">A representation on the current recipe\'s product</string>
+    <string name="image_recipe_desc">An image of a recipe product</string>
+    <string name="step_tv_subtext">Show</string>
+    <string name="step_details_tv_subtext">Swipe</string>
 </resources>

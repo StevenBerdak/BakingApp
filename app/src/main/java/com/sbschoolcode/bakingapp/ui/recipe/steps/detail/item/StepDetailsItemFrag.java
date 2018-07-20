@@ -9,7 +9,6 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +21,8 @@ import com.sbschoolcode.bakingapp.AppUtils;
 import com.sbschoolcode.bakingapp.R;
 import com.sbschoolcode.bakingapp.controllers.ExoController;
 import com.sbschoolcode.bakingapp.models.Step;
+
+import java.nio.charset.Charset;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,7 +37,7 @@ public class StepDetailsItemFrag extends Fragment {
     ImageView mStepImageView;
     private String mVideoUrl = "";
     private int mThisIndex;
-    private ExoController mExoController = ExoController.getInstance();
+    private final ExoController mExoController = ExoController.getInstance();
 
     @Nullable
     @Override
@@ -104,28 +105,7 @@ public class StepDetailsItemFrag extends Fragment {
             if (getArguments() == null || getActivity() == null) return;
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
             int recipeApiIndex = sharedPreferences.getInt(AppConstants.PREF_RECIPE_API_INDEX, -1);
-            switch (recipeApiIndex) {
-                case 1:
-                    setImage(R.drawable.nutella_pie);
-                    break;
-                case 2:
-                    setImage(R.drawable.brownies);
-                    break;
-                case 3:
-                    setImage(R.drawable.yellow_cake);
-                    break;
-                case 4:
-                    setImage(R.drawable.cheesecake);
-                    break;
-                default:
-                    setImage(R.drawable.baking);
-            }
+            AppUtils.setImage(mStepImageView, AppUtils.getRecipeDrawable(recipeApiIndex));
         });
-    }
-
-    private void setImage(int resourceId) {
-        Handler handler = new Handler(Looper.getMainLooper());
-        if (mStepImageView != null)
-            handler.post(() -> mStepImageView.setImageResource(resourceId));
     }
 }

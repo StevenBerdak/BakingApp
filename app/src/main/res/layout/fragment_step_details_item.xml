@@ -42,6 +42,17 @@
             android:textAlignment="center"
             android:textSize="16sp" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:textColor="@android:color/darker_gray"
+            android:text="@string/step_details_tv_subtext"
+            android:textSize="12sp" />
+
     </android.support.v7.widget.CardView>
 
 </LinearLayout>

@@ -16,8 +16,8 @@ import com.sbschoolcode.bakingapp.services.IsDatabaseInitializedService;
 public class ServiceController {
 
     private static ServiceController mServiceControllerInstance;
-    private BroadcastReceiver mServiceControllerReceiver;
-    private IntentFilter mIntentFilter;
+    private final BroadcastReceiver mServiceControllerReceiver;
+    private final IntentFilter mIntentFilter;
 
     private ServiceController() {
         mServiceControllerReceiver = new ServiceControllerReceiver();

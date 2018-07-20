@@ -8,7 +8,7 @@ import com.sbschoolcode.bakingapp.data.DbContract.IngredientsEntry;
 import com.sbschoolcode.bakingapp.data.DbContract.RecipesEntry;
 import com.sbschoolcode.bakingapp.data.DbContract.StepsEntry;
 
-public class RecipeDbHelper extends SQLiteOpenHelper {
+class RecipeDbHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "recipes_database";
     private static final int DATABASE_VERSION = 15;

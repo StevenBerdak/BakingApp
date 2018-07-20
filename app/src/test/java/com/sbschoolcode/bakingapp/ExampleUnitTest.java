@@ -1,10 +1,5 @@
 package com.sbschoolcode.bakingapp;
 
-import android.net.Uri;
-
-import com.sbschoolcode.bakingapp.data.DataUtils;
-import com.sbschoolcode.bakingapp.data.DbContract;
-
 import org.junit.Test;
 
 import static org.junit.Assert.*;

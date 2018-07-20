@@ -17,13 +17,13 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 
-public class StepsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+class StepsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int VIEW_TYPE_HEADER = 111;
     private static final int VIEW_TYPE_STEP_ITEM = 222;
     private ArrayList<Step> mStepsList;
     private ArrayList<Ingredient> mIngredientsList;
-    private View.OnClickListener mClickListener;
+    private final View.OnClickListener mClickListener;
 
     StepsAdapter(View.OnClickListener onClickListener) {
         this.mClickListener = onClickListener;
@@ -31,9 +31,9 @@ public class StepsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     class StepsViewHolder extends RecyclerView.ViewHolder {
 
-        TextView textView;
+        final TextView textView;
 
-        public StepsViewHolder(View itemView) {
+        StepsViewHolder(View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.step_text_view);
         }
@@ -41,10 +41,10 @@ public class StepsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     class HeaderViewHolder extends RecyclerView.ViewHolder {
 
-        LinearLayout container;
+        final LinearLayout container;
         TextView quantity, measure, ingredient;
 
-        public HeaderViewHolder(View itemView) {
+        HeaderViewHolder(View itemView) {
             super(itemView);
             container = itemView.findViewById(R.id.steps_header_tv_container);
         }
@@ -78,7 +78,7 @@ public class StepsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             }
         } else {
             int arrayPosition = position - 1;
-            ((StepsViewHolder) holder).textView.setText(mStepsList.get(arrayPosition).shortDescription);
+            ((StepsViewHolder) holder).textView.setText(mStepsList.get(arrayPosition).shortDescription.replaceAll("\\.", ""));
             holder.itemView.setTag(mStepsList.get(arrayPosition).id);
             holder.itemView.setOnClickListener(mClickListener);
         }

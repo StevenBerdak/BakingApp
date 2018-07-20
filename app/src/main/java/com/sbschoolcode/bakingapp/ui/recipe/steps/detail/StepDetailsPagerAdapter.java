@@ -14,9 +14,8 @@ import java.util.ArrayList;
 
 class StepDetailsPagerAdapter extends FragmentStatePagerAdapter {
 
-    private ArrayList<Step> mStepsList;
-    private int mImportantIndex;
-    private boolean mInit = false;
+    private final ArrayList<Step> mStepsList;
+    private final int mImportantIndex;
 
     StepDetailsPagerAdapter(FragmentManager fm, ArrayList<Step> stepsList, int importantIndex) {
         super(fm);
@@ -31,13 +30,12 @@ class StepDetailsPagerAdapter extends FragmentStatePagerAdapter {
         Bundle stepBundle = new Bundle();
         stepBundle.putParcelable(AppConstants.BUNDLE_EXTRA_STEP_MODEL, mStepsList.get(position));
 
-        if (!mInit) stepBundle.putBoolean(AppConstants.BUNDLE_EXTRA_IS_IMPORTANT, mImportantIndex == position);
+        stepBundle.putBoolean(AppConstants.BUNDLE_EXTRA_IS_IMPORTANT, mImportantIndex == position);
         stepBundle.putInt(AppConstants.BUNDLE_EXTRA_STEP_INDEX, position);
         stepDetailsFragment.setArguments(stepBundle);
 
         return stepDetailsFragment;
     }
-
 
     @Override
     public int getCount() {

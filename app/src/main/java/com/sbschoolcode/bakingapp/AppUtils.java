@@ -1,16 +1,13 @@
 package com.sbschoolcode.bakingapp;
 
 import android.content.Context;
-import android.net.Uri;
-import android.support.v4.content.ContextCompat;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.google.android.exoplayer2.C;
-
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -85,6 +82,27 @@ public class AppUtils {
         }
 
         return TextUtils.join(" ", words);
+    }
+
+    public static int getRecipeDrawable(int recipeApiIndex) {
+        switch (recipeApiIndex) {
+            case 1:
+                return R.drawable.nutella_cake;
+            case 2:
+                return R.drawable.brownies;
+            case 3:
+                return R.drawable.yellow_cake;
+            case 4:
+                return R.drawable.cheesecake;
+            default:
+                return R.drawable.baking;
+        }
+    }
+
+    public static void setImage(ImageView imageView, int resourceId) {
+        Handler handler = new Handler(Looper.getMainLooper());
+        if (imageView != null)
+            handler.post(() -> imageView.setImageResource(resourceId));
     }
 
     public static void testShiv(Class cls, String target) {

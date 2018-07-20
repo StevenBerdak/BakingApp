@@ -7,14 +7,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.exoplayer2.ExoPlayer;
-import com.google.android.exoplayer2.ExoPlayerFactory;
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.sbschoolcode.bakingapp.AppConstants;
 import com.sbschoolcode.bakingapp.AppUtils;
 import com.sbschoolcode.bakingapp.R;
@@ -31,6 +27,7 @@ public class StepDetailsPagerFrag extends Fragment {
     @BindView(R.id.step_details_view_pager)
     ViewPager mViewPager;
     private ExoController mExoController;
+    private ArrayList<Step> mStepsList;
 
     @Nullable
     @Override
@@ -45,10 +42,10 @@ public class StepDetailsPagerFrag extends Fragment {
         mExoController.prepareExoPlayer(getContext());
 
         if (getArguments() != null) {
-            ArrayList<Step> stepsList = getArguments().getParcelableArrayList(AppConstants.INTENT_EXTRA_STEPS_LIST);
+            mStepsList = getArguments().getParcelableArrayList(AppConstants.INTENT_EXTRA_STEPS_LIST);
             int currentIndex = getArguments().getInt(AppConstants.BUNDLE_EXTRA_STEP_INDEX);
-            if (stepsList != null) {
-                mViewPager.setAdapter(new StepDetailsPagerAdapter(getChildFragmentManager(), stepsList, currentIndex));
+            if (mStepsList != null) {
+                mViewPager.setAdapter(new StepDetailsPagerAdapter(getChildFragmentManager(), mStepsList, currentIndex));
                 if (currentIndex != mViewPager.getCurrentItem()) mViewPager.setCurrentItem(currentIndex);
             } else {
                 AppUtils.makeLongToast(getContext(), getString(R.string.error_recipe_data));
@@ -72,6 +69,10 @@ public class StepDetailsPagerFrag extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+        int current = prefs.getInt(AppConstants.PREF_DETAILS_LOADED, -1);
+
+        if (current > 0 && !mStepsList.get(current).videoUrl.equals(""))
         mExoController.startPlayback();
     }
 

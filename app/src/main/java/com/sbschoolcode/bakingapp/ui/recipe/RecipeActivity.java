@@ -58,6 +58,9 @@ public class RecipeActivity extends AppCompatActivity {
     }
 
     private void loadSteps() {
+        Recipe recipe = mCurrentBundle.getParcelable(AppConstants.INTENT_EXTRA_RECIPE);
+        if (recipe != null) setTitle(recipe.name);
+
         SelectStepFrag fragment = new SelectStepFrag();
         fragment.setArguments(mCurrentBundle);
         getSupportFragmentManager().beginTransaction()

@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onLoadFinished(@NonNull Loader loader, Cursor data) {
         Log.v("TESTING", "Loader load finished");
-        data.setNotificationUri(getContentResolver(),DataUtils.getContentUri(DbContract.CONTENT_PROVIDER_AUTHORITY, DbContract.RecipesEntry.TABLE_NAME));
+        data.setNotificationUri(getContentResolver(), DataUtils.getContentUri(DbContract.CONTENT_PROVIDER_AUTHORITY, DbContract.RecipesEntry.TABLE_NAME));
         mMainAdapter.swapCursor(data);
     }
 
@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(intent.getAction() == null) return;
+            if (intent.getAction() == null) return;
             if (intent.getAction().equals(ACTION_DOWNLOAD_RECIPES)) {
                 mServiceController.startDownloadJsonData(MainActivity.this);
             } else if (intent.getAction().equals(ACTION_INIT_LOADER)) {
