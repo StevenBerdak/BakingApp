@@ -1,9 +1,7 @@
 package com.sbschoolcode.bakingapp.ui.recipe.steps;
 
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -20,7 +18,7 @@ import com.sbschoolcode.bakingapp.AppUtils;
 import com.sbschoolcode.bakingapp.R;
 import com.sbschoolcode.bakingapp.models.Ingredient;
 import com.sbschoolcode.bakingapp.models.Step;
-import com.sbschoolcode.bakingapp.ui.recipe.detail.StepDetailsFrag;
+import com.sbschoolcode.bakingapp.ui.recipe.steps.detail.StepDetailsPagerFrag;
 
 import java.util.ArrayList;
 
@@ -35,7 +33,6 @@ public class SelectStepFrag extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         Log.v(AppConstants.TESTING, "Fragment item clicked: " + v.getTag());
-
         loadDetailFragment((int) v.getTag());
     }
 
@@ -81,33 +78,13 @@ public class SelectStepFrag extends Fragment implements View.OnClickListener {
         if (detailLoaded > 0) loadDetailFragment(detailLoaded);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-    }
-
     private void loadDetailFragment(int index) {
 
-        Fragment detailFragment = new StepDetailsFrag();
-        if (getArguments() != null)
-            getArguments().getParcelableArrayList(AppConstants.INTENT_EXTRA_INGREDIENTS_LIST);
-
-        Log.v(AppConstants.TESTING, "Attempting to load details model with id = " + index);
+        Fragment detailFragment = new StepDetailsPagerFrag();
 
         Bundle stepBundle = new Bundle();
-        Parcelable stepParcelable;
-        ArrayList<Step> stepList = getArguments().getParcelableArrayList(AppConstants.INTENT_EXTRA_STEPS_LIST);
-        if (stepList != null && stepList.size() > 0) stepParcelable = stepList.get(index);
-        else {
-            Log.e(getClass().getSimpleName(), getString(R.string.error_loading_step_model));
-            return;
-        }
-        stepBundle.putParcelable(AppConstants.BUNDLE_EXTRA_STEP_MODEL, stepParcelable);
+        stepBundle.putInt(AppConstants.BUNDLE_EXTRA_STEP_INDEX, index);
+        stepBundle.putAll(getArguments());
         detailFragment.setArguments(stepBundle);
         if (getFragmentManager() != null) {
             getFragmentManager().beginTransaction().addToBackStack(getTag())

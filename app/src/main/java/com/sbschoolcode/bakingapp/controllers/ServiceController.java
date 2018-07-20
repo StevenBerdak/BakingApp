@@ -9,7 +9,7 @@ import android.util.Log;
 import com.sbschoolcode.bakingapp.AppConstants;
 import com.sbschoolcode.bakingapp.ui.MainActivity;
 import com.sbschoolcode.bakingapp.services.DownloadHttpService;
-import com.sbschoolcode.bakingapp.services.GetRecipeItemService;
+import com.sbschoolcode.bakingapp.services.BuildRecipeItemService;
 import com.sbschoolcode.bakingapp.services.InsertRecipesService;
 import com.sbschoolcode.bakingapp.services.IsDatabaseInitializedService;
 
@@ -41,8 +41,8 @@ public class ServiceController {
         ctx.unregisterReceiver(mServiceControllerReceiver);
     }
 
-    public void startQueryRecipeItem(Context ctx, Intent intent) {
-        GetRecipeItemService.enqueueWork(ctx, GetRecipeItemService.class,
+    public void startBuildRecipeItem(Context ctx, Intent intent) {
+        BuildRecipeItemService.enqueueWork(ctx, BuildRecipeItemService.class,
                 AppConstants.GET_RECIPE_ITEM_JOB_ID, intent);
     }
 

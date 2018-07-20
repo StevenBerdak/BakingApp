@@ -36,7 +36,7 @@ public class RecipeActivity extends AppCompatActivity {
         initReceiver();
 
         if (savedInstanceState == null)
-            ServiceController.getInstance().startQueryRecipeItem(this, getIntent());
+            ServiceController.getInstance().startBuildRecipeItem(this, getIntent());
     }
 
     @Override
@@ -82,7 +82,9 @@ public class RecipeActivity extends AppCompatActivity {
             getSupportFragmentManager().popBackStack();
             return true;
         }
-        return super.onSupportNavigateUp();
+        else {
+            return super.onSupportNavigateUp();
+        }
     }
 
     private void initReceiver() {

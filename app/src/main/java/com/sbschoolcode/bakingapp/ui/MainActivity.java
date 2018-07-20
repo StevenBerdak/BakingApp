@@ -4,11 +4,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
@@ -57,6 +59,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         /* Init view components. */
         mRecipeListRecyclerView.setLayoutManager(mGridLayoutManager);
         mRecipeListRecyclerView.setAdapter(mMainAdapter);
+
+        //TODO: responsive image sizes
     }
 
     @Override
@@ -123,11 +127,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onClick(View v) {
         Log.v("TESTING", "Item clicked = " + v.getTag());
-        mRecipeLoaded = (int) v.getTag();
-        loadRecipeActivity(mRecipeLoaded);
+        loadRecipeActivity((int) v.getTag());
     }
 
     private void loadRecipeActivity(int apiTag) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences.edit().putInt(AppConstants.PREF_RECIPE_API_INDEX, apiTag).apply();
+        mRecipeLoaded = apiTag;
         Intent recipeActivity = new Intent(this, RecipeActivity.class);
         recipeActivity.putExtra(AppConstants.INTENT_EXTRA_RECIPE_API_INDEX, apiTag);
         startActivity(recipeActivity);

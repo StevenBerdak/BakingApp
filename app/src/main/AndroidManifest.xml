@@ -22,7 +22,7 @@
         <service android:name=".services.DownloadHttpService" />
         <service android:name=".services.InsertRecipesService" />
         <service android:name=".services.IsDatabaseInitializedService" />
-        <service android:name=".services.GetRecipeItemService" />
+        <service android:name=".services.BuildRecipeItemService" />
 
         <provider
             android:name=".data.RecipeProvider"

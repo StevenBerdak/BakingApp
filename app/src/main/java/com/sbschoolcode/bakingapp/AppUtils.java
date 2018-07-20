@@ -87,7 +87,7 @@ public class AppUtils {
         return TextUtils.join(" ", words);
     }
 
-    public static void testShiv(Class cls) {
-        Log.v(AppConstants.TESTING, "true, location = " + cls.getSimpleName());
+    public static void testShiv(Class cls, String target) {
+        Log.v(AppConstants.TESTING, "true, location = " + cls.getSimpleName() + " : " + target);
     }
 }

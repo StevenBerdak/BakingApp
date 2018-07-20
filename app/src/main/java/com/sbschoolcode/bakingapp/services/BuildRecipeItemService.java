@@ -17,7 +17,7 @@ import com.sbschoolcode.bakingapp.models.Step;
 
 import java.util.ArrayList;
 
-public class GetRecipeItemService extends JobIntentService {
+public class BuildRecipeItemService extends JobIntentService {
     @Override
     protected void onHandleWork(@NonNull Intent intent) {
         int recipeApiIndex = intent.getIntExtra(AppConstants.INTENT_EXTRA_RECIPE_API_INDEX, -1);
