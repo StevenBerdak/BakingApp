@@ -13,6 +13,9 @@ import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
+import android.support.test.espresso.IdlingResource;
+import android.support.test.espresso.idling.CountingIdlingResource;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -43,6 +46,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private BroadcastReceiver mMainReceiver;
     private IntentFilter mMainIntentFilter;
     private int mRecipeLoaded;
+    @Nullable
+    CountingIdlingResource mCountingIdlingResource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +90,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     protected void onResume() {
         super.onResume();
         mRecipeLoaded = 0;
+
+        if (mCountingIdlingResource != null) mCountingIdlingResource.increment();
+
         mServiceController.initDownloadOrSkip(this);
         mServiceController.registerReceiver(this);
         registerReceiver(mMainReceiver, mMainIntentFilter);
@@ -148,7 +156,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 mServiceController.startDownloadJsonData(MainActivity.this);
             } else if (intent.getAction().equals(ACTION_INIT_LOADER)) {
                 getSupportLoaderManager().initLoader(AppConstants.RECIPE_LOADER_ID, null, MainActivity.this);
+                if (mCountingIdlingResource != null) mCountingIdlingResource.decrement();
             }
         }
+    }
+
+    @VisibleForTesting
+    @NonNull
+    public IdlingResource getIdlingResource() {
+        if (mCountingIdlingResource == null) mCountingIdlingResource = new CountingIdlingResource("WaitForRecipes");
+        return mCountingIdlingResource;
     }
 }
