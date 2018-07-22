@@ -56,23 +56,24 @@ public class StepDetailsPagerFrag extends Fragment {
                 }
             }
         }
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+        prefs.edit().putInt(AppConstants.PREF_DETAILS_LOADED, -1).apply();
     }
 
     @Override
     public void onPause() {
         super.onPause();
         mExoController.pausePlayback();
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-        prefs.edit().putInt(AppConstants.PREF_DETAILS_LOADED, -1).apply();
     }
 
     @Override
     public void onResume() {
         super.onResume();
+
+        //Resume ExoPlayer playback
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
         int current = prefs.getInt(AppConstants.PREF_DETAILS_LOADED, -1);
-
-        if (current > 0 && !mStepsList.get(current).videoUrl.equals(""))
+        if (current > -1 && !mStepsList.get(current).videoUrl.equals(""))
         mExoController.startPlayback();
     }
 

@@ -72,10 +72,10 @@ public class SelectStepFrag extends Fragment implements View.OnClickListener {
             stepsAdapter.swapArrays(mStepsList, mIngredientsList);
         }
         Log.v(AppConstants.TESTING, "SelectStepFrag loaded");
-
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         int detailLoaded = sharedPreferences.getInt(AppConstants.PREF_DETAILS_LOADED, -1);
-        if (detailLoaded > 0) loadDetailFragment(detailLoaded);
+        Log.v(AppConstants.TESTING, "SelectAStepFrag onViewCreated, detailLoaded id = " + detailLoaded);
+        if (detailLoaded > -1) loadDetailFragment(detailLoaded);
     }
 
     private void loadDetailFragment(int index) {

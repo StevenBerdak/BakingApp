@@ -75,6 +75,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mRecipeListRecyclerView.setAdapter(mMainAdapter);
 
         //TODO: responsive image sizes
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        int lastLoadId = preferences.getInt(AppConstants.PREF_RECIPE_API_INDEX, -1);
+        Log.v(AppConstants.TESTING, "MainActivity onCreate, last load id = " + lastLoadId);
+        if (lastLoadId > 0) loadRecipeActivity(lastLoadId);
     }
 
     @Override

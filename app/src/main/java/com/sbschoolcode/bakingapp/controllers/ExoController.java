@@ -1,13 +1,22 @@
 package com.sbschoolcode.bakingapp.controllers;
 
 import android.content.Context;
+import android.media.session.MediaSession;
 import android.net.Uri;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 
+import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.PlaybackParameters;
+import com.google.android.exoplayer2.Player;
+import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory;
 import com.google.android.exoplayer2.upstream.cache.NoOpCacheEvictor;
@@ -20,6 +29,8 @@ public class ExoController {
     private static ExoController mInstance;
     private ExoPlayer mExoPlayer;
     private MediaSource mMediaSource;
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private ExoControllerMediaSession mMediaSession;
 
     private ExoController() {
 
@@ -34,11 +45,19 @@ public class ExoController {
 
     public void prepareExoPlayer(Context ctx) {
         mExoPlayer = ExoPlayerFactory.newSimpleInstance(ctx, new DefaultTrackSelector());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mMediaSession = new ExoControllerMediaSession();
+            mExoPlayer.addListener(mMediaSession);
+            mMediaSession.initialize(ctx);
+        }
     }
 
     public void releaseExoPlayer() {
         mExoPlayer.stop();
         mExoPlayer.release();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mMediaSession.shutdown();
+        }
         mExoPlayer = null;
     }
 
@@ -48,7 +67,7 @@ public class ExoController {
 
         mMediaSource = new ExtractorMediaSource.Factory(new CacheDataSourceFactory(
                 new SimpleCache(ctx.getCacheDir(), new NoOpCacheEvictor()),
-                        factory)).createMediaSource(uri);
+                factory)).createMediaSource(uri);
     }
 
     public void attachMediaSourceToPlayer() {
@@ -67,8 +86,91 @@ public class ExoController {
         mExoPlayer.setPlayWhenReady(true);
     }
 
-    //Todo: build me: map to functions in AudioManager for managing audio state (ex request audio focus)
-    private class SimpleMediaSession {
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private class ExoControllerMediaSession extends MediaSession.Callback implements Player.EventListener {
 
+        MediaSession mMediaSession;
+
+        ExoControllerMediaSession() {
+
+        }
+
+        void initialize(Context ctx) {
+            mMediaSession = new MediaSession(ctx, "ExoControllerMediaSession");
+            mMediaSession.setCallback(this);
+            mMediaSession.setFlags(MediaSession.FLAG_HANDLES_MEDIA_BUTTONS |
+                    MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS);
+            mMediaSession.setMediaButtonReceiver(null);
+            mMediaSession.setActive(true);
+        }
+
+        void shutdown() {
+            mMediaSession.setActive(false);
+        }
+
+        @Override
+        public void onPlay() {
+            if (mExoPlayer != null) mExoPlayer.setPlayWhenReady(true);
+        }
+
+        @Override
+        public void onStop() {
+            if (mExoPlayer != null) mExoPlayer.stop();
+        }
+
+        @Override
+        public void onPause() {
+            if (mExoPlayer != null) mExoPlayer.setPlayWhenReady(false);
+        }
+
+        @Override
+        public void onTimelineChanged(Timeline timeline, Object manifest, int reason) {
+
+        }
+
+        @Override
+        public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
+
+        }
+
+        @Override
+        public void onLoadingChanged(boolean isLoading) {
+
+        }
+
+        @Override
+        public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+
+        }
+
+        @Override
+        public void onRepeatModeChanged(int repeatMode) {
+
+        }
+
+        @Override
+        public void onShuffleModeEnabledChanged(boolean shuffleModeEnabled) {
+
+        }
+
+        @Override
+        public void onPlayerError(ExoPlaybackException error) {
+
+        }
+
+        @Override
+        public void onPositionDiscontinuity(int reason) {
+
+        }
+
+        @Override
+        public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
+
+        }
+
+        @Override
+        public void onSeekProcessed() {
+
+        }
     }
 }

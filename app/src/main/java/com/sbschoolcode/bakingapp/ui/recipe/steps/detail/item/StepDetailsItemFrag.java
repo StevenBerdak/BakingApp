@@ -22,8 +22,6 @@ import com.sbschoolcode.bakingapp.R;
 import com.sbschoolcode.bakingapp.controllers.ExoController;
 import com.sbschoolcode.bakingapp.models.Step;
 
-import java.nio.charset.Charset;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -75,14 +73,14 @@ public class StepDetailsItemFrag extends Fragment {
 
     private void init() {
         Handler handler = new Handler(Looper.getMainLooper());
-        handler.post(() -> {
+        handler.postDelayed(() -> {
             mExoController.setMediaSource(getContext(), Uri.parse(mVideoUrl));
             mExoController.attachMediaSourceToPlayer();
             mStepPlayerView.setPlayer(mExoController.getExoPlayerInstance());
             mExoController.startPlayback();
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
             prefs.edit().putInt(AppConstants.PREF_DETAILS_LOADED, mThisIndex).apply();
-        });
+        }, 750);
     }
 
     @Override
@@ -92,7 +90,11 @@ public class StepDetailsItemFrag extends Fragment {
             if (isVisibleToUser) {
                 if (!mVideoUrl.equals("")) {
                     init();
-                } else mExoController.pausePlayback();
+                } else {
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+                    prefs.edit().putInt(AppConstants.PREF_DETAILS_LOADED, mThisIndex).apply();
+                    mExoController.pausePlayback();
+                }
             }
         }
     }

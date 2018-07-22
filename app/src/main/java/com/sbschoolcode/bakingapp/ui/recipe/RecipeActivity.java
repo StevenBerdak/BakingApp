@@ -7,9 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.Toast;
@@ -66,9 +66,10 @@ public class RecipeActivity extends AppCompatActivity {
 
     private void loadSteps() {
         Recipe recipe = mCurrentBundle.getParcelable(AppConstants.INTENT_EXTRA_RECIPE);
-        if (recipe != null) setTitle(recipe.name);
-
-        updateWidget(recipe.name);
+        if (recipe != null) {
+            setTitle(recipe.name);
+            updateWidget(recipe.name);
+        }
 
         SelectStepFrag fragment = new SelectStepFrag();
         fragment.setArguments(mCurrentBundle);
@@ -101,13 +102,21 @@ public class RecipeActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        prefs.edit().putInt(AppConstants.PREF_DETAILS_LOADED, -1).apply();
         if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
             getSupportFragmentManager().popBackStack();
             return true;
-        }
-        else {
+        } else {
             return super.onSupportNavigateUp();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        prefs.edit().putInt(AppConstants.PREF_DETAILS_LOADED, -1).apply();
+        super.onBackPressed();
     }
 
     private void initReceiver() {
