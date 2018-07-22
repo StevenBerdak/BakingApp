@@ -36,7 +36,6 @@ public class RecipeProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
-        Log.v("TESTING", "Provider query on uri: " + uri.toString());
         SQLiteDatabase db = mRecipeDbHelper.getReadableDatabase();
         switch (mUriMatcher.match(uri)) {
             case 1:
@@ -66,8 +65,6 @@ public class RecipeProvider extends ContentProvider {
                 sortOrder = DbContract.StepsEntry.COLUMN_STEP_ID + " ASC";
                 break;
         }
-
-        Log.v("TESTING", "Actual query params (uri, sel, args) = " + uri.toString() + ", " + selection + ", " + Arrays.toString(selectionArgs));
 
         return db.query(uri.getLastPathSegment(), projection, selection, selectionArgs, null, null, sortOrder);
     }

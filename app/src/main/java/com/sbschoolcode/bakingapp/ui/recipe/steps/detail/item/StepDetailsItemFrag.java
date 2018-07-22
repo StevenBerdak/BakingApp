@@ -1,11 +1,9 @@
 package com.sbschoolcode.bakingapp.ui.recipe.steps.detail.item;
 
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -71,16 +69,17 @@ public class StepDetailsItemFrag extends Fragment {
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        AppUtils.setPreferenceDetailLoaded(getContext(), -1, false);
+    }
+
     private void init() {
-        Handler handler = new Handler(Looper.getMainLooper());
-        handler.postDelayed(() -> {
-            mExoController.setMediaSource(getContext(), Uri.parse(mVideoUrl));
-            mExoController.attachMediaSourceToPlayer();
-            mStepPlayerView.setPlayer(mExoController.getExoPlayerInstance());
-            mExoController.startPlayback();
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-            prefs.edit().putInt(AppConstants.PREF_DETAILS_LOADED, mThisIndex).apply();
-        }, 750);
+        mExoController.setMediaSource(getContext(), Uri.parse(mVideoUrl));
+        mExoController.attachMediaSourceToPlayer();
+        mStepPlayerView.setPlayer(mExoController.getExoPlayerInstance());
+        mExoController.startPlayback();
     }
 
     @Override
@@ -91,8 +90,6 @@ public class StepDetailsItemFrag extends Fragment {
                 if (!mVideoUrl.equals("")) {
                     init();
                 } else {
-                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-                    prefs.edit().putInt(AppConstants.PREF_DETAILS_LOADED, mThisIndex).apply();
                     mExoController.pausePlayback();
                 }
             }
@@ -105,8 +102,7 @@ public class StepDetailsItemFrag extends Fragment {
             mStepPlayerView.setVisibility(View.GONE);
             mStepImageView.setVisibility(View.VISIBLE);
             if (getArguments() == null || getActivity() == null) return;
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-            int recipeApiIndex = sharedPreferences.getInt(AppConstants.PREF_RECIPE_API_INDEX, -1);
+            int recipeApiIndex = AppUtils.lastRecipeLoaded(getContext());
             AppUtils.setImage(mStepImageView, AppUtils.getRecipeDrawable(recipeApiIndex));
         });
     }

@@ -21,7 +21,6 @@ public class BuildRecipeItemService extends JobIntentService {
     @Override
     protected void onHandleWork(@NonNull Intent intent) {
         int recipeApiIndex = intent.getIntExtra(AppConstants.INTENT_EXTRA_RECIPE_API_INDEX, -1);
-        Log.v("TESTING", "Get recipe item service started on recipe with api index " + recipeApiIndex);
         if (recipeApiIndex == -1) return;
 
         Uri recipeUri = DataUtils.getContentUri(DbContract.CONTENT_PROVIDER_AUTHORITY, DbContract.RecipesEntry.TABLE_NAME)

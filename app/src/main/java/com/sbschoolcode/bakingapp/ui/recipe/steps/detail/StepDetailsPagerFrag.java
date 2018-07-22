@@ -1,8 +1,6 @@
 package com.sbschoolcode.bakingapp.ui.recipe.steps.detail;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -56,8 +54,6 @@ public class StepDetailsPagerFrag extends Fragment {
                 }
             }
         }
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-        prefs.edit().putInt(AppConstants.PREF_DETAILS_LOADED, -1).apply();
     }
 
     @Override
@@ -71,8 +67,7 @@ public class StepDetailsPagerFrag extends Fragment {
         super.onResume();
 
         //Resume ExoPlayer playback
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-        int current = prefs.getInt(AppConstants.PREF_DETAILS_LOADED, -1);
+        int current = AppUtils.lastDetailLoaded(getContext());
         if (current > -1 && !mStepsList.get(current).videoUrl.equals(""))
         mExoController.startPlayback();
     }

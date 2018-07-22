@@ -1,8 +1,11 @@
 package com.sbschoolcode.bakingapp;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.ImageView;
@@ -107,5 +110,57 @@ public class AppUtils {
 
     public static void testShiv(Class cls, String target) {
         Log.v(AppConstants.TESTING, "true, location = " + cls.getSimpleName() + " : " + target);
+    }
+
+    @SuppressLint("ApplySharedPref")
+    public static void setPreferenceRecipeLoaded(Context ctx, int apiId, String name, boolean isLoaded) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
+        if (isLoaded) {
+            prefs.edit().putInt(AppConstants.PREF_RECIPE_LOADED_API_INDEX, apiId)
+                    .putInt(AppConstants.PREF_RECIPE_WIDGET_ID, apiId)
+                    .putString(AppConstants.PREF_RECIPE_LOADED_NAME, name)
+                    .putBoolean(AppConstants.PREF_RECIPE_IS_LOADED, true).apply();
+        } else {
+            prefs.edit().putInt(AppConstants.PREF_RECIPE_LOADED_API_INDEX, -1)
+                    .putBoolean(AppConstants.PREF_RECIPE_IS_LOADED, false).commit();
+
+        }
+    }
+
+    @SuppressLint("ApplySharedPref")
+    public static void setPreferenceDetailLoaded(Context ctx, int detailIndex, boolean isLoaded) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
+        if (isLoaded) {
+            prefs.edit().putInt(AppConstants.PREF_DETAILS_LAST_LOADED, detailIndex)
+                .putBoolean(AppConstants.PREF_DETAILS_IS_LOADED, true).apply();
+        } else {
+            prefs.edit().putInt(AppConstants.PREF_DETAILS_LAST_LOADED, -1)
+                    .putBoolean(AppConstants.PREF_DETAILS_IS_LOADED, false).commit();
+        }
+    }
+
+    public static int lastDetailLoaded(Context ctx) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
+        return prefs.getInt(AppConstants.PREF_DETAILS_LAST_LOADED, -1);
+    }
+
+    public static int lastRecipeLoaded(Context ctx) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
+        return prefs.getInt(AppConstants.PREF_RECIPE_LOADED_API_INDEX, -1);
+    }
+
+    public static String lastRecipeLoadedByName(Context ctx) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
+        return prefs.getString(AppConstants.PREF_RECIPE_LOADED_NAME, "");
+    }
+
+    public static boolean recipeIsLoaded(Context ctx) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
+        return prefs.getBoolean(AppConstants.PREF_RECIPE_IS_LOADED, false);
+    }
+
+    public static boolean detailIsLoaded(Context ctx) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
+        return prefs.getBoolean(AppConstants.PREF_DETAILS_IS_LOADED, false);
     }
 }

@@ -25,8 +25,6 @@ public class InsertRecipesService extends JobIntentService {
     @Override
     protected void onHandleWork(@NonNull Intent intent) {
 
-        Log.v("TESTING", "Insert recipes service started");
-
         String jsonString = intent.getStringExtra(EXTRA_IN_JSON_DATA);
 
         ArrayList<ContentValues> recipesValuesArr = new ArrayList<>();

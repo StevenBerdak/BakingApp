@@ -5,8 +5,6 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.preference.PreferenceManager;
-import android.util.Log;
-import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
@@ -25,7 +23,6 @@ public class BakingWidgetViewsService extends RemoteViewsService {
 
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
-        Log.v(AppConstants.TESTING, "App widget get view factory");
         return new ViewsFactory();
     }
 
@@ -35,14 +32,11 @@ public class BakingWidgetViewsService extends RemoteViewsService {
 
         @Override
         public void onCreate() {
-            Log.v(AppConstants.TESTING, "App widget onCreate");
-
             loadIngredients();
         }
 
         @Override
         public void onDataSetChanged() {
-            Log.v(AppConstants.TESTING, "App widget onDataSetChanged");
             AppUtils.testShiv(getClass(),"ran");
 
             loadIngredients();
@@ -55,13 +49,11 @@ public class BakingWidgetViewsService extends RemoteViewsService {
 
         @Override
         public int getCount() {
-            Log.v(AppConstants.TESTING, "App widget getCount returning " + mIngredientsList.size());
             return mIngredientsList.size();
         }
 
         @Override
         public RemoteViews getViewAt(int i) {
-            Log.v(AppConstants.TESTING, "App getting updating widget view at position " + i + ". List size = " + mIngredientsList.size());
             RemoteViews views = new RemoteViews(getPackageName(), R.layout.steps_header_ingredient_pair);
 
             NumberFormat format = new DecimalFormat("0.#");
@@ -95,13 +87,12 @@ public class BakingWidgetViewsService extends RemoteViewsService {
 
         private void loadIngredients() {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-            int apiId = preferences.getInt(AppConstants.PREF_DETAILS_LAST_LOAD, -1);
+            int apiId = preferences.getInt(AppConstants.PREF_RECIPE_WIDGET_ID, -1);
             if (apiId < 0) return;
 
             Uri ingredientUri = DataUtils.getContentUri(DbContract.CONTENT_PROVIDER_AUTHORITY, DbContract.IngredientsEntry.TABLE_NAME)
                     .buildUpon().appendPath(Integer.toString(apiId)).build();
             Cursor cursor = getContentResolver().query(ingredientUri, null, null, null, null);
-            Log.v(AppConstants.TESTING, cursor == null ? "Widget update cursor null" : "Widget cursor update, count = " +cursor.getCount());
             mIngredientsList = new ArrayList<>();
             if (cursor != null) {
                 for (int i = 0; i < cursor.getCount(); ++i) {

@@ -6,22 +6,19 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.sbschoolcode.bakingapp.AppConstants;
+import com.sbschoolcode.bakingapp.AppUtils;
 import com.sbschoolcode.bakingapp.R;
 import com.sbschoolcode.bakingapp.controllers.ServiceController;
 import com.sbschoolcode.bakingapp.models.Recipe;
 import com.sbschoolcode.bakingapp.ui.recipe.steps.SelectStepFrag;
 import com.sbschoolcode.bakingapp.widget.BakingWidget;
-
-import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,8 +39,13 @@ public class RecipeActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         initReceiver();
 
-        if (savedInstanceState == null)
+        if (savedInstanceState == null) {
+            AppUtils.testShiv(getClass(), "savedInstanceState is null");
             ServiceController.getInstance().startBuildRecipeItem(this, getIntent());
+        }
+
+        AppUtils.setPreferenceRecipeLoaded(this, getIntent().getIntExtra(AppConstants.INTENT_EXTRA_RECIPE_API_INDEX, -1),
+                getIntent().getStringExtra(AppConstants.INTENT_EXTRA_RECIPE), true);
     }
 
     @Override
@@ -74,16 +76,13 @@ public class RecipeActivity extends AppCompatActivity {
         SelectStepFrag fragment = new SelectStepFrag();
         fragment.setArguments(mCurrentBundle);
         getSupportFragmentManager().beginTransaction()
-                .replace(mContentFrame.getId(), fragment, AppConstants.FRAGMENT_SELECT_A_STEP_TAG).commit();
+                .add(mContentFrame.getId(), fragment, AppConstants.FRAGMENT_SELECT_A_STEP_TAG).commit();
     }
 
     private void updateWidget(String name) {
-        PreferenceManager.getDefaultSharedPreferences(this).edit().putString(AppConstants.PREF_DETAILS_RECIPE_NAME, name).apply();
-
         Intent updateWidgets = new Intent(this, BakingWidget.class);
         updateWidgets.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
         int[] widgetIds = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), BakingWidget.class));
-        Log.v(AppConstants.TESTING, "Widget id's = " + Arrays.toString(widgetIds));
         updateWidgets.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, widgetIds);
         sendBroadcast(updateWidgets);
     }
@@ -102,21 +101,23 @@ public class RecipeActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        prefs.edit().putInt(AppConstants.PREF_DETAILS_LOADED, -1).apply();
+        Log.v("TESTING", "backstack count = " + getSupportFragmentManager().getBackStackEntryCount());
         if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
             getSupportFragmentManager().popBackStack();
             return true;
-        } else {
-            return super.onSupportNavigateUp();
         }
+        return super.onSupportNavigateUp();
+
     }
 
     @Override
     public void onBackPressed() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        prefs.edit().putInt(AppConstants.PREF_DETAILS_LOADED, -1).apply();
-        super.onBackPressed();
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStack();
+        } else {
+            AppUtils.setPreferenceRecipeLoaded(this, -1, "", false);
+            finish();
+        }
     }
 
     private void initReceiver() {
@@ -127,7 +128,6 @@ public class RecipeActivity extends AppCompatActivity {
 
     private void onError() {
         Toast.makeText(RecipeActivity.this, R.string.error_loading_recipe, Toast.LENGTH_LONG).show();
-        Log.v(AppConstants.TESTING, "onError()");
         finish();
     }
 
@@ -141,7 +141,6 @@ public class RecipeActivity extends AppCompatActivity {
                 Recipe recipe = intent.getParcelableExtra(AppConstants.INTENT_EXTRA_RECIPE);
                 if (recipe == null) onError();
                 else {
-                    Log.v(AppConstants.TESTING, "Recipe received, recipe name = " + recipe);
                     mCurrentBundle = intent.getExtras();
                     loadSteps();
                 }

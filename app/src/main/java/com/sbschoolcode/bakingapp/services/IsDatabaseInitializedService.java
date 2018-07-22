@@ -20,7 +20,6 @@ public class IsDatabaseInitializedService extends JobIntentService {
             sendBroadcast(new Intent(MainActivity.ACTION_DOWNLOAD_RECIPES));
         } else {
             sendBroadcast(new Intent(MainActivity.ACTION_INIT_LOADER));
-            Log.v("TESTING", "skipping data download");
         }
         if (null != cursor) cursor.close();
     }

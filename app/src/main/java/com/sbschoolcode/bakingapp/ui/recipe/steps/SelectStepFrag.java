@@ -1,8 +1,6 @@
 package com.sbschoolcode.bakingapp.ui.recipe.steps;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -32,7 +30,6 @@ public class SelectStepFrag extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        Log.v(AppConstants.TESTING, "Fragment item clicked: " + v.getTag());
         loadDetailFragment((int) v.getTag());
     }
 
@@ -71,16 +68,17 @@ public class SelectStepFrag extends Fragment implements View.OnClickListener {
 
             stepsAdapter.swapArrays(mStepsList, mIngredientsList);
         }
-        Log.v(AppConstants.TESTING, "SelectStepFrag loaded");
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        int detailLoaded = sharedPreferences.getInt(AppConstants.PREF_DETAILS_LOADED, -1);
-        Log.v(AppConstants.TESTING, "SelectAStepFrag onViewCreated, detailLoaded id = " + detailLoaded);
-        if (detailLoaded > -1) loadDetailFragment(detailLoaded);
+
+        if (savedInstanceState == null && AppUtils.detailIsLoaded(getContext())) {
+            loadDetailFragment(AppUtils.lastDetailLoaded(getContext()));
+        }
     }
 
     private void loadDetailFragment(int index) {
 
         Fragment detailFragment = new StepDetailsPagerFrag();
+
+        AppUtils.setPreferenceDetailLoaded(getContext(), index, true);
 
         Bundle stepBundle = new Bundle();
         stepBundle.putInt(AppConstants.BUNDLE_EXTRA_STEP_INDEX, index);

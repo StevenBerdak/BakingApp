@@ -1,23 +1,17 @@
 package com.sbschoolcode.bakingapp.ui;
 
-import android.appwidget.AppWidgetManager;
-import android.appwidget.AppWidgetProvider;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
-import android.support.constraint.solver.widgets.WidgetContainer;
 import android.support.test.espresso.IdlingResource;
 import android.support.test.espresso.idling.CountingIdlingResource;
 import android.support.v4.app.LoaderManager;
@@ -26,23 +20,19 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.sbschoolcode.bakingapp.AppConstants;
+import com.sbschoolcode.bakingapp.AppUtils;
 import com.sbschoolcode.bakingapp.R;
 import com.sbschoolcode.bakingapp.controllers.ServiceController;
 import com.sbschoolcode.bakingapp.data.DataUtils;
 import com.sbschoolcode.bakingapp.data.DbContract;
 import com.sbschoolcode.bakingapp.ui.recipe.RecipeActivity;
-import com.sbschoolcode.bakingapp.widget.BakingWidget;
-
-import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static android.appwidget.AppWidgetManager.getInstance;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener {
 
@@ -54,7 +44,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private MainAdapter mMainAdapter;
     private BroadcastReceiver mMainReceiver;
     private IntentFilter mMainIntentFilter;
-    private int mRecipeLoaded;
     @Nullable
     CountingIdlingResource mCountingIdlingResource;
 
@@ -67,46 +56,40 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mServiceController = ServiceController.getInstance();
 
         mMainAdapter = new MainAdapter(this);
+
         //Todo: need to be responsive for phone vs tablet
+        //Todo: Check internet connection
+
         GridLayoutManager mGridLayoutManager = new GridLayoutManager(this, 1);
 
         /* Init view components. */
         mRecipeListRecyclerView.setLayoutManager(mGridLayoutManager);
         mRecipeListRecyclerView.setAdapter(mMainAdapter);
-
-        //TODO: responsive image sizes
-
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        int lastLoadId = preferences.getInt(AppConstants.PREF_RECIPE_API_INDEX, -1);
-        Log.v(AppConstants.TESTING, "MainActivity onCreate, last load id = " + lastLoadId);
-        if (lastLoadId > 0) loadRecipeActivity(lastLoadId);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (mRecipeLoaded > 0) {
-            outState.putInt(AppConstants.BUNDLE_RECIPE_LOADED, mRecipeLoaded);
-        }
+        AppUtils.lastRecipeLoaded(this);
+        outState.putInt(AppConstants.BUNDLE_RECIPE_LOADED_ID, AppUtils.lastRecipeLoaded(this));
+        outState.putString(AppConstants.BUNDLE_RECIPE_LOADED_NAME, AppUtils.lastRecipeLoadedByName(this));
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        int storedId = savedInstanceState.getInt(AppConstants.BUNDLE_RECIPE_LOADED, -1);
-        if (mRecipeLoaded == 0 && storedId > 0) {
+        if (AppUtils.recipeIsLoaded(this)) {
+            String recipeLoadedName = savedInstanceState.getString(AppConstants.BUNDLE_RECIPE_LOADED_NAME, "");
+            int recipeLoadedId = savedInstanceState.getInt(AppConstants.BUNDLE_RECIPE_LOADED_ID, -1);
             Handler handler = new Handler(Looper.getMainLooper());
-            handler.post(() -> loadRecipeActivity(storedId));
+            handler.post(() -> loadRecipeActivity(recipeLoadedId, recipeLoadedName));
         }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mRecipeLoaded = 0;
-
         if (mCountingIdlingResource != null) mCountingIdlingResource.increment();
-
         mServiceController.initDownloadOrSkip(this);
         mServiceController.registerReceiver(this);
         registerReceiver(mMainReceiver, mMainIntentFilter);
@@ -129,14 +112,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
-        Log.v("TESTING", "Loader created");
         Uri recipesUri = DataUtils.getContentUri(DbContract.CONTENT_PROVIDER_AUTHORITY, DbContract.RecipesEntry.TABLE_NAME);
         return new CursorLoader(this, recipesUri, null, null, null, null);
     }
 
     @Override
     public void onLoadFinished(@NonNull Loader loader, Cursor data) {
-        Log.v("TESTING", "Loader load finished");
         data.setNotificationUri(getContentResolver(), DataUtils.getContentUri(DbContract.CONTENT_PROVIDER_AUTHORITY, DbContract.RecipesEntry.TABLE_NAME));
         mMainAdapter.swapCursor(data);
     }
@@ -148,19 +129,24 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onClick(View v) {
-        Log.v("TESTING", "Item clicked = " + v.getTag());
-        loadRecipeActivity((int) v.getTag());
+        TextView recipeNameTv = v.findViewById(R.id.recipe_list_item_name_tv);
+        loadRecipeActivity((int) v.getTag(), recipeNameTv.getText().toString());
     }
 
-    private void loadRecipeActivity(int apiTag) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        sharedPreferences.edit().putInt(AppConstants.PREF_RECIPE_API_INDEX, apiTag)
-                .putInt(AppConstants.PREF_DETAILS_LAST_LOAD, apiTag).apply();
-
-        mRecipeLoaded = apiTag;
+    private void loadRecipeActivity(int apiTag, String name) {
+        AppUtils.setPreferenceRecipeLoaded(this, apiTag, name, true);
         Intent recipeActivity = new Intent(this, RecipeActivity.class);
+        recipeActivity.putExtra(AppConstants.INTENT_EXTRA_RECIPE, name);
         recipeActivity.putExtra(AppConstants.INTENT_EXTRA_RECIPE_API_INDEX, apiTag);
         startActivity(recipeActivity);
+    }
+
+    @VisibleForTesting
+    @NonNull
+    public IdlingResource getIdlingResource() {
+        if (mCountingIdlingResource == null)
+            mCountingIdlingResource = new CountingIdlingResource("WaitForRecipes");
+        return mCountingIdlingResource;
     }
 
     private class MainReceiver extends BroadcastReceiver {
@@ -175,12 +161,5 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 if (mCountingIdlingResource != null) mCountingIdlingResource.decrement();
             }
         }
-    }
-
-    @VisibleForTesting
-    @NonNull
-    public IdlingResource getIdlingResource() {
-        if (mCountingIdlingResource == null) mCountingIdlingResource = new CountingIdlingResource("WaitForRecipes");
-        return mCountingIdlingResource;
     }
 }
