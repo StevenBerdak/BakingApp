@@ -1,9 +1,13 @@
 package com.sbschoolcode.bakingapp.ui.recipe;
 
+import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +19,9 @@ import com.sbschoolcode.bakingapp.R;
 import com.sbschoolcode.bakingapp.controllers.ServiceController;
 import com.sbschoolcode.bakingapp.models.Recipe;
 import com.sbschoolcode.bakingapp.ui.recipe.steps.SelectStepFrag;
+import com.sbschoolcode.bakingapp.widget.BakingWidget;
+
+import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -61,10 +68,23 @@ public class RecipeActivity extends AppCompatActivity {
         Recipe recipe = mCurrentBundle.getParcelable(AppConstants.INTENT_EXTRA_RECIPE);
         if (recipe != null) setTitle(recipe.name);
 
+        updateWidget(recipe.name);
+
         SelectStepFrag fragment = new SelectStepFrag();
         fragment.setArguments(mCurrentBundle);
         getSupportFragmentManager().beginTransaction()
                 .replace(mContentFrame.getId(), fragment, AppConstants.FRAGMENT_SELECT_A_STEP_TAG).commit();
+    }
+
+    private void updateWidget(String name) {
+        PreferenceManager.getDefaultSharedPreferences(this).edit().putString(AppConstants.PREF_DETAILS_RECIPE_NAME, name).apply();
+
+        Intent updateWidgets = new Intent(this, BakingWidget.class);
+        updateWidgets.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        int[] widgetIds = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), BakingWidget.class));
+        Log.v(AppConstants.TESTING, "Widget id's = " + Arrays.toString(widgetIds));
+        updateWidgets.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, widgetIds);
+        sendBroadcast(updateWidgets);
     }
 
     @Override

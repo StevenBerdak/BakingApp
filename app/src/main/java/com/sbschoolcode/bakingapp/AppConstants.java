@@ -23,4 +23,6 @@ public class AppConstants {
     public static final String BUNDLE_EXTRA_STEP_MODEL = "bundle_extra_step_model";
     public static final String BUNDLE_EXTRA_IS_IMPORTANT = "bundle_extra_is_important";
     public static final String PREF_RECIPE_API_INDEX = "pref_recipe_api_index";
+    public static final String PREF_DETAILS_LAST_LOAD = "pref_details_last_load";
+    public static final String PREF_DETAILS_RECIPE_NAME = "pref_details_recipe_name";
 }

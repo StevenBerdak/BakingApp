@@ -66,4 +66,9 @@ public class ExoController {
     public void startPlayback() {
         mExoPlayer.setPlayWhenReady(true);
     }
+
+    //Todo: build me: map to functions in AudioManager for managing audio state (ex request audio focus)
+    private class SimpleMediaSession {
+
+    }
 }

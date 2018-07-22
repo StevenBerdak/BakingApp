@@ -23,6 +23,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textAllCaps="true"
+        android:paddingRight="2dp"
         android:layout_weight="1"
         android:gravity="start|top"/>
 

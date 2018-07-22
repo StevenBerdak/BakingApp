@@ -24,18 +24,31 @@
         <service android:name=".services.InsertRecipesService" />
         <service android:name=".services.IsDatabaseInitializedService" />
         <service android:name=".services.BuildRecipeItemService" />
+        <service
+            android:name=".widget.BakingWidgetViewsService"
+            android:exported="true"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <provider
             android:name=".data.RecipeProvider"
             android:authorities="com.sbschoolcode.bakingapp.data"
-            android:exported="false" />
+            android:exported="true" />
 
         <activity android:name=".ui.recipe.RecipeActivity">
-
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.MainActivity" />
         </activity>
+
+        <receiver android:name=".widget.BakingWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/baking_widget_info" />
+        </receiver>
     </application>
 
 </manifest>

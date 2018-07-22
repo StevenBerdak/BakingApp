@@ -1,6 +1,9 @@
 package com.sbschoolcode.bakingapp.ui;
 
+import android.appwidget.AppWidgetManager;
+import android.appwidget.AppWidgetProvider;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -14,6 +17,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
+import android.support.constraint.solver.widgets.WidgetContainer;
 import android.support.test.espresso.IdlingResource;
 import android.support.test.espresso.idling.CountingIdlingResource;
 import android.support.v4.app.LoaderManager;
@@ -31,9 +35,14 @@ import com.sbschoolcode.bakingapp.controllers.ServiceController;
 import com.sbschoolcode.bakingapp.data.DataUtils;
 import com.sbschoolcode.bakingapp.data.DbContract;
 import com.sbschoolcode.bakingapp.ui.recipe.RecipeActivity;
+import com.sbschoolcode.bakingapp.widget.BakingWidget;
+
+import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static android.appwidget.AppWidgetManager.getInstance;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener {
 
@@ -140,7 +149,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private void loadRecipeActivity(int apiTag) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        sharedPreferences.edit().putInt(AppConstants.PREF_RECIPE_API_INDEX, apiTag).apply();
+        sharedPreferences.edit().putInt(AppConstants.PREF_RECIPE_API_INDEX, apiTag)
+                .putInt(AppConstants.PREF_DETAILS_LAST_LOAD, apiTag).apply();
+
         mRecipeLoaded = apiTag;
         Intent recipeActivity = new Intent(this, RecipeActivity.class);
         recipeActivity.putExtra(AppConstants.INTENT_EXTRA_RECIPE_API_INDEX, apiTag);
