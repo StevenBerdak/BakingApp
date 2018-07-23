@@ -16,7 +16,8 @@ We were required to provide responsive views based on screen size and provide an
 * Java
 * XML
 
-### Images
+## Images
+
 
 ![alt text](https://github.com/StevenBerdak/BakingApp/blob/master/readme/app_screenshots_1.png)
 ![alt text](https://github.com/StevenBerdak/BakingApp/blob/master/readme/app_screenshots_2.png)
