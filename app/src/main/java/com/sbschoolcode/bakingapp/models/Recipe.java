@@ -3,8 +3,6 @@ package com.sbschoolcode.bakingapp.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.ArrayList;
-
 public class Recipe implements Parcelable {
 
     public final int apiId;

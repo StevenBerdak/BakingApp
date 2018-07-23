@@ -4,11 +4,10 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v4.app.JobIntentService;
-import android.util.Log;
 
-import com.sbschoolcode.bakingapp.ui.MainActivity;
 import com.sbschoolcode.bakingapp.data.DataUtils;
 import com.sbschoolcode.bakingapp.data.DbContract;
+import com.sbschoolcode.bakingapp.ui.MainActivity;
 
 public class IsDatabaseInitializedService extends JobIntentService {
     @Override

@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">BakingApp</string>
-    <string name="name_placeholder">Name Placeholder</string>
     <string name="error_http">Error performing http request</string>
     <string name="error_json">Error parsing Json data</string>
     <string name="error_loading_recipe">Could not load recipe</string>
@@ -17,8 +16,6 @@
     <string name="image_recipe_desc">An image of a recipe product</string>
     <string name="step_tv_subtext">Show</string>
     <string name="step_details_tv_subtext">Swipe</string>
-    <string name="appwidget_text">EXAMPLE</string>
-    <string name="add_widget">Add widget</string>
     <string name="select_recipe_use_hint">Select a recipe to display ingredients.</string>
     <string name="ingredients">Ingredients</string>
     <string name="recipe">Recipe</string>

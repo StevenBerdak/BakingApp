@@ -23,13 +23,10 @@ public class DownloadHttpService extends JobIntentService {
 
     @Override
     protected void onHandleWork(@NonNull Intent intent) {
-        Log.v("TESTING", "DHTTPS ran");
-
 
         try {
             String httpData = downloadHttpData(intent.getStringExtra(EXTRA_IN_REQUEST_URL));
 
-            Log.v("TESTING", httpData);
             if (httpData != null && httpData.length() > 0) {
                 Intent broadcastHttpResult = new Intent(ACTION_HTTP_RESULT);
                 broadcastHttpResult.putExtra(EXTRA_OUT_HTTP_RESULT, httpData);

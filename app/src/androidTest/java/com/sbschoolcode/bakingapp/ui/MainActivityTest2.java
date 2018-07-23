@@ -1,7 +1,6 @@
 package com.sbschoolcode.bakingapp.ui;
 
 
-import android.support.test.espresso.Espresso;
 import android.support.test.espresso.IdlingRegistry;
 import android.support.test.espresso.IdlingResource;
 import android.support.test.espresso.ViewInteraction;

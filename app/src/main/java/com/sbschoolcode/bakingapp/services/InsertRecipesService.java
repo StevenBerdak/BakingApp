@@ -121,7 +121,7 @@ public class InsertRecipesService extends JobIntentService {
      * @param uri The uri to insert to.
      * @param contentValuesArr The content values to add.
      */
-    void bulkInsertData(Uri uri, ContentValues[] contentValuesArr) {
+    private void bulkInsertData(Uri uri, ContentValues[] contentValuesArr) {
         getContentResolver().bulkInsert(uri, contentValuesArr);
     }
 }

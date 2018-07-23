@@ -178,7 +178,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
      * Show the error view text and button.
      */
     public void showNetworkErrorViews() {
-        Log.v("TESTING", "");
         mMainProgressBar.setVisibility(View.GONE);
         mNoNetworkButton.setVisibility(View.VISIBLE);
         mNoNetworkTextView.setVisibility(View.VISIBLE);
@@ -197,13 +196,17 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction() == null) return;
-            if (intent.getAction().equals(ACTION_DOWNLOAD_RECIPES)) {
-                mServiceController.startDownloadJsonData(MainActivity.this);
-            } else if (intent.getAction().equals(ACTION_INIT_LOADER)) {
-                getSupportLoaderManager().initLoader(AppConstants.RECIPE_LOADER_ID, null, MainActivity.this);
-                if (mCountingIdlingResource != null) mCountingIdlingResource.decrement();
-            } else if (intent.getAction().equals(ACTION_NO_NETWORK)) {
-                showNetworkErrorViews();
+            switch (intent.getAction()) {
+                case ACTION_DOWNLOAD_RECIPES:
+                    mServiceController.startDownloadJsonData(MainActivity.this);
+                    break;
+                case ACTION_INIT_LOADER:
+                    getSupportLoaderManager().initLoader(AppConstants.RECIPE_LOADER_ID, null, MainActivity.this);
+                    if (mCountingIdlingResource != null) mCountingIdlingResource.decrement();
+                    break;
+                case ACTION_NO_NETWORK:
+                    showNetworkErrorViews();
+                    break;
             }
         }
     }

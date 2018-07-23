@@ -11,8 +11,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import java.util.Arrays;
-
 public class RecipeProvider extends ContentProvider {
 
     private RecipeDbHelper mRecipeDbHelper;
@@ -51,7 +49,7 @@ public class RecipeProvider extends ContentProvider {
                 break;
             case 4:
                 selection = DbContract.IngredientsEntry.COLUMN_PARENT_API_ID + "= ?";
-                selectionArgs = new String[]{ uri.getLastPathSegment() };
+                selectionArgs = new String[]{uri.getLastPathSegment()};
                 uri = Uri.parse(DbContract.IngredientsEntry.TABLE_NAME);
                 sortOrder = DbContract.IngredientsEntry.COLUMN_INGREDIENT + " ASC";
                 break;
@@ -60,7 +58,7 @@ public class RecipeProvider extends ContentProvider {
                 break;
             case 6:
                 selection = DbContract.StepsEntry.COLUMN_PARENT_API_ID + "= ?";
-                selectionArgs = new String[]{ uri.getLastPathSegment() };
+                selectionArgs = new String[]{uri.getLastPathSegment()};
                 uri = Uri.parse(DbContract.StepsEntry.TABLE_NAME);
                 sortOrder = DbContract.StepsEntry.COLUMN_STEP_ID + " ASC";
                 break;
@@ -86,7 +84,7 @@ public class RecipeProvider extends ContentProvider {
             db.endTransaction();
             db.close();
 
-            if(getContext() != null) getContext().getContentResolver().notifyChange(uri, null);
+            if (getContext() != null) getContext().getContentResolver().notifyChange(uri, null);
 
             return uri.buildUpon().appendPath(Long.toString(rowId)).build();
         } catch (SQLiteConstraintException e) {
@@ -110,7 +108,7 @@ public class RecipeProvider extends ContentProvider {
             db.setTransactionSuccessful();
             db.endTransaction();
             db.close();
-            if(getContext() != null) getContext().getContentResolver().notifyChange(uri, null);
+            if (getContext() != null) getContext().getContentResolver().notifyChange(uri, null);
             return rows;
         } catch (SQLiteConstraintException e) {
             Log.v(getClass().getSimpleName(), "Unique constraint failed, rows not inserted, already in database");
