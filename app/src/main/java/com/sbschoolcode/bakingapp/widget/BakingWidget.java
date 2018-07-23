@@ -17,6 +17,13 @@ import com.sbschoolcode.bakingapp.R;
  */
 public class BakingWidget extends AppWidgetProvider {
 
+    /**
+     * Update the data within the widget using the service.
+     *
+     * @param context          The context to use for updating the widget.
+     * @param appWidgetManager An AppWidgetManager instance.
+     * @param appWidgetId      The id of the widget to update.
+     */
     static void updateData(Context context, AppWidgetManager appWidgetManager,
                            int appWidgetId) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.baking_widget);

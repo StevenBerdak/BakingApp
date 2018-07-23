@@ -43,6 +43,11 @@ public class ExoController {
         return mInstance;
     }
 
+    /**
+     * Prepare the exo player for audio.
+     *
+     * @param ctx The context prepare the player with.
+     */
     public void prepareExoPlayer(Context ctx) {
         mExoPlayer = ExoPlayerFactory.newSimpleInstance(ctx, new DefaultTrackSelector());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -52,6 +57,9 @@ public class ExoController {
         }
     }
 
+    /**
+     * Release the exo players resources.
+     */
     public void releaseExoPlayer() {
         mExoPlayer.stop();
         mExoPlayer.release();
@@ -61,6 +69,12 @@ public class ExoController {
         mExoPlayer = null;
     }
 
+    /**
+     * Set a new media source represented by a Uri on the player.
+     *
+     * @param ctx The context to use to set the media source.
+     * @param uri The uri pointing at the media source.
+     */
     public void setMediaSource(Context ctx, Uri uri) {
         DefaultHttpDataSourceFactory factory =
                 new DefaultHttpDataSourceFactory(Util.getUserAgent(ctx, AppConstants.APP_NAME));
@@ -70,6 +84,9 @@ public class ExoController {
                 factory)).createMediaSource(uri);
     }
 
+    /**
+     * Attaches the media source to the player.
+     */
     public void attachMediaSourceToPlayer() {
         mExoPlayer.prepare(mMediaSource);
     }
@@ -86,6 +103,9 @@ public class ExoController {
         mExoPlayer.setPlayWhenReady(true);
     }
 
+    /**
+     * An inner class containing callbacks for the media session.
+     */
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private class ExoControllerMediaSession extends MediaSession.Callback implements Player.EventListener {
 

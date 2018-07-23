@@ -3,7 +3,7 @@
     android:initialKeyguardLayout="@layout/baking_widget"
     android:initialLayout="@layout/baking_widget"
     android:minHeight="110dp"
-    android:minWidth="165dp"
+    android:minWidth="110dp"
     android:previewImage="@mipmap/ic_launcher"
     android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="0"

@@ -37,7 +37,6 @@ public class BakingWidgetViewsService extends RemoteViewsService {
 
         @Override
         public void onDataSetChanged() {
-            AppUtils.testShiv(getClass(),"ran");
 
             loadIngredients();
         }
@@ -60,7 +59,7 @@ public class BakingWidgetViewsService extends RemoteViewsService {
 
             views.setTextViewText(R.id.ingredient_quantity, format.format(mIngredientsList.get(i).quantity));
             views.setTextViewText(R.id.ingredient_measure, mIngredientsList.get(i).measure);
-            views.setTextViewText(R.id.ingredient_name, AppUtils.normalizeWords(mIngredientsList.get(i).ingredient));
+            views.setTextViewText(R.id.ingredient_name, AppUtils.normalizeIngredientsText(mIngredientsList.get(i).ingredient));
 
             return views;
         }
@@ -85,6 +84,9 @@ public class BakingWidgetViewsService extends RemoteViewsService {
             return true;
         }
 
+        /**
+         * Load the ingredients with new data.
+         */
         private void loadIngredients() {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
             int apiId = preferences.getInt(AppConstants.PREF_RECIPE_WIDGET_ID, -1);

@@ -22,4 +22,6 @@
     <string name="select_recipe_use_hint">Select a recipe to display ingredients.</string>
     <string name="ingredients">Ingredients</string>
     <string name="recipe">Recipe</string>
+    <string name="no_network">There was an error loading the recipe data. Check your internet and try again</string>
+    <string name="button_retry">RETRY</string>
 </resources>

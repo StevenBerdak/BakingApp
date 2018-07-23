@@ -18,15 +18,33 @@ public class AppUtils {
 
     private static final String LOG_TAG = "AppUtils";
 
+    /**
+     * Make a regular toast.
+     *
+     * @param ctx     Context to use foe the toast.
+     * @param message Message to show.
+     */
     public static void makeToast(Context ctx, String message) {
         Toast.makeText(ctx, message, Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Make a long toast.
+     *
+     * @param ctx     Context to use for the toast.
+     * @param message Message to show.
+     */
     public static void makeLongToast(Context ctx, String message) {
         Toast.makeText(ctx, message, Toast.LENGTH_LONG).show();
     }
 
-    public static String normalizeWords(String input) {
+    /**
+     * Normalize words for display of ingredients using a capitalize all words format.
+     *
+     * @param input The text to normalize.
+     * @return A normalized string.
+     */
+    public static String normalizeIngredientsText(String input) {
         ArrayList<String> words = new ArrayList<>(Arrays.asList(input.split(" ")));
         try {
             char specialChar;
@@ -87,6 +105,12 @@ public class AppUtils {
         return TextUtils.join(" ", words);
     }
 
+    /**
+     * Get the drawable to match with the provided recipe.
+     *
+     * @param recipeApiIndex The index to use to get an image for.
+     * @return A resource id for an image.
+     */
     public static int getRecipeDrawable(int recipeApiIndex) {
         switch (recipeApiIndex) {
             case 1:
@@ -102,16 +126,26 @@ public class AppUtils {
         }
     }
 
+    /**
+     * Set the image to the provided ImageView from the provided resource id.
+     *
+     * @param imageView  The image view to use.
+     * @param resourceId The resource id to use.
+     */
     public static void setImage(ImageView imageView, int resourceId) {
         Handler handler = new Handler(Looper.getMainLooper());
         if (imageView != null)
             handler.post(() -> imageView.setImageResource(resourceId));
     }
 
-    public static void testShiv(Class cls, String target) {
-        Log.v(AppConstants.TESTING, "true, location = " + cls.getSimpleName() + " : " + target);
-    }
-
+    /**
+     * Apply a change in the shared preferences for the loaded recipe.
+     *
+     * @param ctx      Context to use.
+     * @param apiId    The api id of the recipe.
+     * @param name     The name of the recipe.
+     * @param isLoaded Whether the recipe is loaded or not.
+     */
     @SuppressLint("ApplySharedPref")
     public static void setPreferenceRecipeLoaded(Context ctx, int apiId, String name, boolean isLoaded) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
@@ -127,38 +161,75 @@ public class AppUtils {
         }
     }
 
+    /**
+     * Apply and change in the shared preferences for the loaded recipe steps detail.
+     *
+     * @param ctx         Context to use.
+     * @param detailIndex The index of the detail item.
+     * @param isLoaded    Whether the detail is loaded or not.
+     */
     @SuppressLint("ApplySharedPref")
     public static void setPreferenceDetailLoaded(Context ctx, int detailIndex, boolean isLoaded) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
         if (isLoaded) {
             prefs.edit().putInt(AppConstants.PREF_DETAILS_LAST_LOADED, detailIndex)
-                .putBoolean(AppConstants.PREF_DETAILS_IS_LOADED, true).apply();
+                    .putBoolean(AppConstants.PREF_DETAILS_IS_LOADED, true).apply();
         } else {
             prefs.edit().putInt(AppConstants.PREF_DETAILS_LAST_LOADED, -1)
                     .putBoolean(AppConstants.PREF_DETAILS_IS_LOADED, false).commit();
         }
     }
 
+    /**
+     * The last loaded detail index.
+     *
+     * @param ctx Context to use.
+     * @return The index of the detail.
+     */
     public static int lastDetailLoaded(Context ctx) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
         return prefs.getInt(AppConstants.PREF_DETAILS_LAST_LOADED, -1);
     }
 
+    /**
+     * The last loaded recipe api id.
+     *
+     * @param ctx Context to use.
+     * @return The api id of the recipe.
+     */
     public static int lastRecipeLoaded(Context ctx) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
         return prefs.getInt(AppConstants.PREF_RECIPE_LOADED_API_INDEX, -1);
     }
 
+    /**
+     * The last loaded recipe name.
+     *
+     * @param ctx Context to use.
+     * @return Human readable name for the last recipe loaded.
+     */
     public static String lastRecipeLoadedByName(Context ctx) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
         return prefs.getString(AppConstants.PREF_RECIPE_LOADED_NAME, "");
     }
 
+    /**
+     * Check if a recipe is loaded.
+     *
+     * @param ctx Context to use.
+     * @return True if a recipe is loaded.
+     */
     public static boolean recipeIsLoaded(Context ctx) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
         return prefs.getBoolean(AppConstants.PREF_RECIPE_IS_LOADED, false);
     }
 
+    /**
+     * Check if a detail is loaded.
+     *
+     * @param ctx Context to use.
+     * @return True if a detail is loaded.
+     */
     public static boolean detailIsLoaded(Context ctx) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
         return prefs.getBoolean(AppConstants.PREF_DETAILS_IS_LOADED, false);

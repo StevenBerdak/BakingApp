@@ -62,6 +62,11 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         return mCursor.getCount();
     }
 
+    /**
+     * Swap the cursor with new recipe data.
+     *
+     * @param cursor A cursor containing recipe data.
+     */
     public void swapCursor(Cursor cursor) {
         this.mCursor = cursor;
         notifyDataSetChanged();

@@ -7,11 +7,11 @@ import android.content.IntentFilter;
 import android.util.Log;
 
 import com.sbschoolcode.bakingapp.AppConstants;
-import com.sbschoolcode.bakingapp.ui.MainActivity;
-import com.sbschoolcode.bakingapp.services.DownloadHttpService;
 import com.sbschoolcode.bakingapp.services.BuildRecipeItemService;
+import com.sbschoolcode.bakingapp.services.DownloadHttpService;
 import com.sbschoolcode.bakingapp.services.InsertRecipesService;
 import com.sbschoolcode.bakingapp.services.IsDatabaseInitializedService;
+import com.sbschoolcode.bakingapp.ui.MainActivity;
 
 public class ServiceController {
 
@@ -33,19 +33,40 @@ public class ServiceController {
         return mServiceControllerInstance;
     }
 
+    /**
+     * Register this class inner broadcast receiver.
+     *
+     * @param ctx The context to register the receiver with.
+     */
     public void registerReceiver(Context ctx) {
         ctx.registerReceiver(mServiceControllerReceiver, mIntentFilter);
     }
 
+    /**
+     * Unregister this class inner broadcast receiver.
+     *
+     * @param ctx The context to unregister from.
+     */
     public void unregisterReceiver(Context ctx) {
         ctx.unregisterReceiver(mServiceControllerReceiver);
     }
 
+    /**
+     * Start building a recipe item to pass down stream.
+     *
+     * @param ctx    The context to use to stat the service.
+     * @param intent An intent containing setup details for the service.
+     */
     public void startBuildRecipeItem(Context ctx, Intent intent) {
         BuildRecipeItemService.enqueueWork(ctx, BuildRecipeItemService.class,
                 AppConstants.GET_RECIPE_ITEM_JOB_ID, intent);
     }
 
+    /**
+     * Start downloading the Json data used for this app.
+     *
+     * @param ctx The context to use to start the service.
+     */
     public void startDownloadJsonData(Context ctx) {
         Log.v("TESTING", "Start download service called");
         Intent intent = new Intent(ctx, DownloadHttpService.class);
@@ -53,7 +74,12 @@ public class ServiceController {
         DownloadHttpService.enqueueWork(ctx, DownloadHttpService.class, AppConstants.HTTP_DOWNLOAD_JOB_ID, intent);
     }
 
+    /**
+     * Checks if the database has data.
+     * @param ctx The context to use to start the service.
+     */
     public void initDownloadOrSkip(Context ctx) {
+        Log.v("TESTING", "initDorSkip");
         Intent intent = new Intent();
         IsDatabaseInitializedService.enqueueWork(ctx, IsDatabaseInitializedService.class, AppConstants.IS_DB_INITIALIZED_JOB_ID, intent);
     }

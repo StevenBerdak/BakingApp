@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +26,7 @@ public class SelectStepFrag extends Fragment implements View.OnClickListener {
 
     @BindView(R.id.steps_recycler_view)
     RecyclerView mStepsRecyclerView;
+    private boolean mIsLargeLayout;
 
     @Override
     public void onClick(View v) {
@@ -42,6 +42,8 @@ public class SelectStepFrag extends Fragment implements View.OnClickListener {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
+
+        mIsLargeLayout = null != view.findViewById(R.id.step_details_container);
 
         ArrayList<Step> mStepsList;
         ArrayList<Ingredient> mIngredientsList;
@@ -69,11 +71,17 @@ public class SelectStepFrag extends Fragment implements View.OnClickListener {
             stepsAdapter.swapArrays(mStepsList, mIngredientsList);
         }
 
-        if (savedInstanceState == null && AppUtils.detailIsLoaded(getContext())) {
+        if (savedInstanceState == null && AppUtils.detailIsLoaded(getContext()))
             loadDetailFragment(AppUtils.lastDetailLoaded(getContext()));
-        }
+        else if (mIsLargeLayout)
+            loadDetailFragment(AppUtils.lastDetailLoaded(getContext()));
     }
 
+    /**
+     * Load the fragment containing the details of the recipe.
+     *
+     * @param index The index of the detail from the details list.
+     */
     private void loadDetailFragment(int index) {
 
         Fragment detailFragment = new StepDetailsPagerFrag();
@@ -85,8 +93,13 @@ public class SelectStepFrag extends Fragment implements View.OnClickListener {
         stepBundle.putAll(getArguments());
         detailFragment.setArguments(stepBundle);
         if (getFragmentManager() != null) {
-            getFragmentManager().beginTransaction().addToBackStack(getTag())
-                    .replace(getId(), detailFragment, AppConstants.FRAGMENT_DETAIL_TAG).commit();
+            if (mIsLargeLayout) {
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.step_details_container, detailFragment, AppConstants.FRAGMENT_DETAIL_TAG).commit();
+            } else {
+                getFragmentManager().beginTransaction().addToBackStack(getTag())
+                        .replace(getId(), detailFragment, AppConstants.FRAGMENT_DETAIL_TAG).commit();
+            }
         }
     }
 }

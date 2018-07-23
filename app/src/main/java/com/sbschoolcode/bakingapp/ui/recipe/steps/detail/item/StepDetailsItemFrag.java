@@ -72,7 +72,7 @@ public class StepDetailsItemFrag extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        AppUtils.setPreferenceDetailLoaded(getContext(), -1, false);
+        AppUtils.setPreferenceDetailLoaded(getContext(), mThisIndex, false);
     }
 
     private void init() {
@@ -87,6 +87,7 @@ public class StepDetailsItemFrag extends Fragment {
         super.setUserVisibleHint(isVisibleToUser);
         if (getView() != null) {
             if (isVisibleToUser) {
+                AppUtils.setPreferenceDetailLoaded(getContext(), mThisIndex, true);
                 if (!mVideoUrl.equals("")) {
                     init();
                 } else {
@@ -96,6 +97,9 @@ public class StepDetailsItemFrag extends Fragment {
         }
     }
 
+    /**
+     * Prepare the image to load in to the image view.
+     */
     private void prepareImage() {
         Handler handler = new Handler(Looper.getMainLooper());
         handler.post(() -> {

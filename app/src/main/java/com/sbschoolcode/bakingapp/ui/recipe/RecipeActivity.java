@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -39,8 +38,10 @@ public class RecipeActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         initReceiver();
 
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         if (savedInstanceState == null) {
-            AppUtils.testShiv(getClass(), "savedInstanceState is null");
             ServiceController.getInstance().startBuildRecipeItem(this, getIntent());
         }
 
@@ -66,11 +67,14 @@ public class RecipeActivity extends AppCompatActivity {
                 savedInstanceState.getParcelableArrayList(AppConstants.INTENT_EXTRA_STEPS_LIST));
     }
 
+    /**
+     * Load the steps list.
+     */
     private void loadSteps() {
         Recipe recipe = mCurrentBundle.getParcelable(AppConstants.INTENT_EXTRA_RECIPE);
         if (recipe != null) {
             setTitle(recipe.name);
-            updateWidget(recipe.name);
+            updateWidget();
         }
 
         SelectStepFrag fragment = new SelectStepFrag();
@@ -79,7 +83,10 @@ public class RecipeActivity extends AppCompatActivity {
                 .add(mContentFrame.getId(), fragment, AppConstants.FRAGMENT_SELECT_A_STEP_TAG).commit();
     }
 
-    private void updateWidget(String name) {
+    /**
+     * Update the data displayed in the widget.
+     */
+    private void updateWidget() {
         Intent updateWidgets = new Intent(this, BakingWidget.class);
         updateWidgets.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
         int[] widgetIds = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), BakingWidget.class));
@@ -100,17 +107,6 @@ public class RecipeActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onSupportNavigateUp() {
-        Log.v("TESTING", "backstack count = " + getSupportFragmentManager().getBackStackEntryCount());
-        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
-            getSupportFragmentManager().popBackStack();
-            return true;
-        }
-        return super.onSupportNavigateUp();
-
-    }
-
-    @Override
     public void onBackPressed() {
         if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
             getSupportFragmentManager().popBackStack();
@@ -120,12 +116,18 @@ public class RecipeActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Initialize the inner broadcast receiver.
+     */
     private void initReceiver() {
         mRecipeReceiver = new RecipeReceiver();
         mRecipeIntentFilter = new IntentFilter();
         mRecipeIntentFilter.addAction(ACTION_RECIPE_QUERIED);
     }
 
+    /**
+     * Display a toast in case of error.
+     */
     private void onError() {
         Toast.makeText(RecipeActivity.this, R.string.error_loading_recipe, Toast.LENGTH_LONG).show();
         finish();

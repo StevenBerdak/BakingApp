@@ -6,6 +6,7 @@ import android.support.v4.app.JobIntentService;
 import android.util.Log;
 
 import com.sbschoolcode.bakingapp.R;
+import com.sbschoolcode.bakingapp.ui.MainActivity;
 
 import java.io.IOException;
 
@@ -22,20 +23,34 @@ public class DownloadHttpService extends JobIntentService {
 
     @Override
     protected void onHandleWork(@NonNull Intent intent) {
+        Log.v("TESTING", "DHTTPS ran");
+
 
         try {
             String httpData = downloadHttpData(intent.getStringExtra(EXTRA_IN_REQUEST_URL));
 
-            Intent broadcastHttpResult = new Intent(ACTION_HTTP_RESULT);
-            broadcastHttpResult.putExtra(EXTRA_OUT_HTTP_RESULT, httpData);
-            //TODO: check if null, send error broadcast
-            sendBroadcast(broadcastHttpResult);
+            Log.v("TESTING", httpData);
+            if (httpData != null && httpData.length() > 0) {
+                Intent broadcastHttpResult = new Intent(ACTION_HTTP_RESULT);
+                broadcastHttpResult.putExtra(EXTRA_OUT_HTTP_RESULT, httpData);
+
+                sendBroadcast(broadcastHttpResult);
+            } else {
+                sendBroadcast(new Intent(MainActivity.ACTION_NO_NETWORK));
+            }
         } catch (IOException e) {
             e.printStackTrace();
             Log.e(getClass().getSimpleName(), getString(R.string.error_http));
+            sendBroadcast(new Intent(MainActivity.ACTION_NO_NETWORK));
         }
     }
 
+    /**
+     * Initialize and download the http data.
+     * @param requestUrl The url to connect to and request data from.
+     * @return The String with the returned data.
+     * @throws IOException if the response is an error or invalid.
+     */
     private String downloadHttpData(String requestUrl) throws IOException {
         OkHttpClient httpClient = new OkHttpClient();
         Request request = new Request.Builder().url(requestUrl).get().build();
@@ -47,6 +62,8 @@ public class DownloadHttpService extends JobIntentService {
             if (responseBody != null) {
                 return responseBody.string();
             }
+        } else {
+            throw new IOException();
         }
 
         Log.e(getClass().getSimpleName(), getString(R.string.error_http_download));

@@ -20,7 +20,10 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.sbschoolcode.bakingapp.AppConstants;
@@ -38,12 +41,20 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     public static final String ACTION_DOWNLOAD_RECIPES = "com.sbschoolcode.broadcast.DOWNLOAD_RECIPES";
     public static final String ACTION_INIT_LOADER = "com.sbschoolcode.broadcast.INIT_LOADER";
+    public static final String ACTION_NO_NETWORK = "com.sbschoolcode.broadcast.NO_NETWORK";
     private ServiceController mServiceController;
     @BindView(R.id.recipe_list_recycler_view)
     RecyclerView mRecipeListRecyclerView;
+    @BindView(R.id.no_network_tv)
+    TextView mNoNetworkTextView;
+    @BindView(R.id.no_network_button)
+    Button mNoNetworkButton;
+    @BindView(R.id.main_progress_bar)
+    ProgressBar mMainProgressBar;
     private MainAdapter mMainAdapter;
     private BroadcastReceiver mMainReceiver;
     private IntentFilter mMainIntentFilter;
+
     @Nullable
     CountingIdlingResource mCountingIdlingResource;
 
@@ -57,12 +68,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         mMainAdapter = new MainAdapter(this);
 
-        //Todo: need to be responsive for phone vs tablet
-        //Todo: Check internet connection
-
-        GridLayoutManager mGridLayoutManager = new GridLayoutManager(this, 1);
-
         /* Init view components. */
+        boolean isLargeScreen = null != findViewById(R.id.layout_large_spy);
+
+        GridLayoutManager mGridLayoutManager = new GridLayoutManager(this, isLargeScreen ? 3 : 1);
+
         mRecipeListRecyclerView.setLayoutManager(mGridLayoutManager);
         mRecipeListRecyclerView.setAdapter(mMainAdapter);
     }
@@ -102,11 +112,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         unregisterReceiver(mMainReceiver);
     }
 
+    /**
+     * Initialize the inner broadcast receiver.
+     */
     private void initReceiver() {
         mMainReceiver = new MainReceiver();
         mMainIntentFilter = new IntentFilter();
         mMainIntentFilter.addAction(ACTION_DOWNLOAD_RECIPES);
         mMainIntentFilter.addAction(ACTION_INIT_LOADER);
+        mMainIntentFilter.addAction(ACTION_NO_NETWORK);
     }
 
     @NonNull
@@ -119,6 +133,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onLoadFinished(@NonNull Loader loader, Cursor data) {
         data.setNotificationUri(getContentResolver(), DataUtils.getContentUri(DbContract.CONTENT_PROVIDER_AUTHORITY, DbContract.RecipesEntry.TABLE_NAME));
+        mMainProgressBar.setVisibility(View.GONE);
         mMainAdapter.swapCursor(data);
     }
 
@@ -133,12 +148,40 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         loadRecipeActivity((int) v.getTag(), recipeNameTv.getText().toString());
     }
 
+    /**
+     * Load the recipe activity for the selected recipe.
+     *
+     * @param apiTag The api id from the tag attached to the view selected.
+     * @param name   The human readable name of the recipe.
+     */
     private void loadRecipeActivity(int apiTag, String name) {
         AppUtils.setPreferenceRecipeLoaded(this, apiTag, name, true);
         Intent recipeActivity = new Intent(this, RecipeActivity.class);
         recipeActivity.putExtra(AppConstants.INTENT_EXTRA_RECIPE, name);
         recipeActivity.putExtra(AppConstants.INTENT_EXTRA_RECIPE_API_INDEX, apiTag);
         startActivity(recipeActivity);
+    }
+
+    /**
+     * Manually initiate a data download.
+     *
+     * @param view Necessary to use inClick property.
+     */
+    public void manualLoadData(View view) {
+        mMainProgressBar.setVisibility(View.VISIBLE);
+        mNoNetworkButton.setVisibility(View.GONE);
+        mNoNetworkTextView.setVisibility(View.GONE);
+        mServiceController.initDownloadOrSkip(this);
+    }
+
+    /**
+     * Show the error view text and button.
+     */
+    public void showNetworkErrorViews() {
+        Log.v("TESTING", "");
+        mMainProgressBar.setVisibility(View.GONE);
+        mNoNetworkButton.setVisibility(View.VISIBLE);
+        mNoNetworkTextView.setVisibility(View.VISIBLE);
     }
 
     @VisibleForTesting
@@ -159,6 +202,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             } else if (intent.getAction().equals(ACTION_INIT_LOADER)) {
                 getSupportLoaderManager().initLoader(AppConstants.RECIPE_LOADER_ID, null, MainActivity.this);
                 if (mCountingIdlingResource != null) mCountingIdlingResource.decrement();
+            } else if (intent.getAction().equals(ACTION_NO_NETWORK)) {
+                showNetworkErrorViews();
             }
         }
     }

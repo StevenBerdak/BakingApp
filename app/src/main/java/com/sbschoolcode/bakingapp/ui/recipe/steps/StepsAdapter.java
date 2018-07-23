@@ -73,7 +73,7 @@ class StepsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 ((HeaderViewHolder) holder).ingredient = pairLayout.findViewById(R.id.ingredient_name);
                 ((HeaderViewHolder) holder).quantity.setText(format.format(ingredient.quantity));
                 ((HeaderViewHolder) holder).measure.setText(ingredient.measure);
-                ((HeaderViewHolder) holder).ingredient.setText(AppUtils.normalizeWords(ingredient.ingredient));
+                ((HeaderViewHolder) holder).ingredient.setText(AppUtils.normalizeIngredientsText(ingredient.ingredient));
                 ((HeaderViewHolder) holder).container.addView(pairLayout);
             }
         } else {
@@ -96,6 +96,11 @@ class StepsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return mStepsList.size() + 1;
     }
 
+    /**
+     * Swap out the array containing data so that new data can be displayed.
+     * @param steps An array list containing new steps to put into the recycler view.
+     * @param ingredients An array list containing new ingredients to put into the recycler view first item.
+     */
     public void swapArrays(ArrayList<Step> steps, ArrayList<Ingredient> ingredients) {
         this.mStepsList = steps;
         this.mIngredientsList = ingredients;

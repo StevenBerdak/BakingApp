@@ -5,15 +5,14 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.JobIntentService;
-import android.util.Log;
 
 import com.sbschoolcode.bakingapp.AppConstants;
-import com.sbschoolcode.bakingapp.ui.recipe.RecipeActivity;
 import com.sbschoolcode.bakingapp.data.DataUtils;
 import com.sbschoolcode.bakingapp.data.DbContract;
 import com.sbschoolcode.bakingapp.models.Ingredient;
 import com.sbschoolcode.bakingapp.models.Recipe;
 import com.sbschoolcode.bakingapp.models.Step;
+import com.sbschoolcode.bakingapp.ui.recipe.RecipeActivity;
 
 import java.util.ArrayList;
 
@@ -59,6 +58,12 @@ public class BuildRecipeItemService extends JobIntentService {
         sendBroadcast(broadcastRecipeIntent);
     }
 
+    /**
+     * Parse the steps from the cursor.
+     *
+     * @param cursor A cursor containing step data.
+     * @return a steps list.
+     */
     private ArrayList<Step> parseSteps(Cursor cursor) {
         int idIndex = cursor.getColumnIndex(DbContract.StepsEntry.COLUMN_STEP_ID);
         int shortDescIndex = cursor.getColumnIndex(DbContract.StepsEntry.COLUMN_SHORT_DESC);
@@ -78,6 +83,12 @@ public class BuildRecipeItemService extends JobIntentService {
         return result;
     }
 
+    /**
+     * Parse the ingredients from the cursor.
+     *
+     * @param cursor Cursor containing ingredients data.
+     * @return ingredients list.
+     */
     private ArrayList<Ingredient> parseIngredients(Cursor cursor) {
         int quantityIndex = cursor.getColumnIndex(DbContract.IngredientsEntry.COLUMN_QUANTITY);
         int measureIndex = cursor.getColumnIndex(DbContract.IngredientsEntry.COLUMN_MEASURE);
@@ -95,6 +106,12 @@ public class BuildRecipeItemService extends JobIntentService {
         return result;
     }
 
+    /**
+     * Parse the recipes from the cursor.
+     *
+     * @param cursor The cursor containing the recipe data.
+     * @return A recipe object.
+     */
     private Recipe parseRecipeObject(Cursor cursor) {
         cursor.moveToFirst();
         int apiIdIndex = cursor.getColumnIndex(DbContract.RecipesEntry.COLUMN_API_ID);
