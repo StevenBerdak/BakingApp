@@ -72,7 +72,8 @@ public class StepsListFrag extends Fragment implements View.OnClickListener {
             stepsListAdapter.swapArrays(mStepsList, mIngredientsList);
         }
 
-        if (mIsLargeLayout) loadDetailFragment(0);
+
+        if (mIsLargeLayout && savedInstanceState == null) loadDetailFragment(0);
     }
 
     /**
