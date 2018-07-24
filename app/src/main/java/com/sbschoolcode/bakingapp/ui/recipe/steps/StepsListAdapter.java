@@ -18,7 +18,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 
-class StepsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+class StepsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int VIEW_TYPE_HEADER = 111;
     private static final int VIEW_TYPE_STEP_ITEM = 222;
@@ -26,7 +26,7 @@ class StepsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private ArrayList<Ingredient> mIngredientsList;
     private final View.OnClickListener mClickListener;
 
-    StepsAdapter(View.OnClickListener onClickListener) {
+    StepsListAdapter(View.OnClickListener onClickListener) {
         this.mClickListener = onClickListener;
     }
 

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.sbschoolcode.bakingapp.AppUtils;
 import com.sbschoolcode.bakingapp.R;
 import com.sbschoolcode.bakingapp.data.DbContract;
@@ -50,7 +51,12 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         holder.itemView.setTag(mCursor.getInt(apiIdIndex));
         int nameIndex = mCursor.getColumnIndex(DbContract.RecipesEntry.COLUMN_RECIPE_NAME);
         holder.nameTextView.setText(mCursor.getString(nameIndex));
-        AppUtils.setImage(holder.recipeImageView, AppUtils.getRecipeDrawable((int) holder.itemView.getTag()));
+        int imageUrl = mCursor.getColumnIndex(DbContract.RecipesEntry.COLUMN_IMAGE_URL);
+        if (mCursor.getString(imageUrl).length() > 0)
+            Glide.with(holder.itemView.getContext()).load(mCursor.getString(imageUrl)).into(holder.recipeImageView);
+        else
+            AppUtils.setImage(holder.recipeImageView, AppUtils.getRecipeDrawable((int) holder.itemView.getTag()));
+
     }
 
     @Override

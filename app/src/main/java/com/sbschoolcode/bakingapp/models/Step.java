@@ -9,12 +9,14 @@ public class Step implements Parcelable {
     public final String shortDescription;
     public final String description;
     public final String videoUrl;
+    public final String thumbnailUrl;
 
-    public Step(int id, String shortDescription, String description, String videoUrl) {
+    public Step(int id, String shortDescription, String description, String videoUrl, String thumbnailUrl) {
         this.id = id;
         this.shortDescription = shortDescription;
         this.description = description;
         this.videoUrl = videoUrl;
+        this.thumbnailUrl = thumbnailUrl;
     }
 
     public String toString() {
@@ -26,6 +28,7 @@ public class Step implements Parcelable {
         shortDescription = in.readString();
         description = in.readString();
         videoUrl = in.readString();
+        thumbnailUrl = in.readString();
     }
 
     public static final Creator<Step> CREATOR = new Creator<Step>() {
@@ -51,5 +54,6 @@ public class Step implements Parcelable {
         dest.writeString(shortDescription);
         dest.writeString(description);
         dest.writeString(videoUrl);
+        dest.writeString(thumbnailUrl);
     }
 }

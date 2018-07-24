@@ -49,6 +49,9 @@ public class ExoController {
      * @param ctx The context prepare the player with.
      */
     public void prepareExoPlayer(Context ctx) {
+        if (mExoPlayer != null) {
+            return;
+        }
         mExoPlayer = ExoPlayerFactory.newSimpleInstance(ctx, new DefaultTrackSelector());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mMediaSession = new ExoControllerMediaSession();
@@ -82,6 +85,10 @@ public class ExoController {
         mMediaSource = new ExtractorMediaSource.Factory(new CacheDataSourceFactory(
                 new SimpleCache(ctx.getCacheDir(), new NoOpCacheEvictor()),
                 factory)).createMediaSource(uri);
+    }
+
+    public void seekToPosition(long position) {
+        mExoPlayer.seekTo(position);
     }
 
     /**

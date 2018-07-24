@@ -27,7 +27,7 @@ public class BuildRecipeItemService extends JobIntentService {
 
         Cursor recipeCursor = getContentResolver().query(recipeUri, null, null, null, null);
         if (null == recipeCursor || recipeCursor.getCount() == 0) return;
-        Recipe recipe = parseRecipeObject(recipeCursor);
+        Recipe recipe = parseRecipe(recipeCursor);
         recipeCursor.close();
 
         Uri ingredientsUri = DataUtils.getContentUri(DbContract.CONTENT_PROVIDER_AUTHORITY, DbContract.IngredientsEntry.TABLE_NAME)
@@ -69,6 +69,7 @@ public class BuildRecipeItemService extends JobIntentService {
         int shortDescIndex = cursor.getColumnIndex(DbContract.StepsEntry.COLUMN_SHORT_DESC);
         int descriptionIndex = cursor.getColumnIndex(DbContract.StepsEntry.COLUMN_DESCRIPTION);
         int videoUrlIndex = cursor.getColumnIndex(DbContract.StepsEntry.COLUMN_VIDEO_URL);
+        int thumbnailUrlIndex = cursor.getColumnIndex(DbContract.StepsEntry.COLUMN_THUMBNAIL_URL);
 
         ArrayList<Step> result = new ArrayList<>();
 
@@ -77,7 +78,8 @@ public class BuildRecipeItemService extends JobIntentService {
             result.add(new Step(cursor.getInt(idIndex),
                     cursor.getString(shortDescIndex),
                     cursor.getString(descriptionIndex),
-                    cursor.getString(videoUrlIndex)));
+                    cursor.getString(videoUrlIndex),
+                    cursor.getString(thumbnailUrlIndex)));
         }
 
         return result;
@@ -112,14 +114,16 @@ public class BuildRecipeItemService extends JobIntentService {
      * @param cursor The cursor containing the recipe data.
      * @return A recipe object.
      */
-    private Recipe parseRecipeObject(Cursor cursor) {
+    private Recipe parseRecipe(Cursor cursor) {
         cursor.moveToFirst();
         int apiIdIndex = cursor.getColumnIndex(DbContract.RecipesEntry.COLUMN_API_ID);
         int nameIndex = cursor.getColumnIndex(DbContract.RecipesEntry.COLUMN_RECIPE_NAME);
         int servingsIndex = cursor.getColumnIndex(DbContract.RecipesEntry.COLUMN_SERVINGS);
+        int imageUrlIndex = cursor.getColumnIndex(DbContract.RecipesEntry.COLUMN_IMAGE_URL);
 
         return new Recipe(cursor.getInt(apiIdIndex),
                 cursor.getString(nameIndex),
-                cursor.getInt(servingsIndex));
+                cursor.getInt(servingsIndex),
+                cursor.getString(imageUrlIndex));
     }
 }

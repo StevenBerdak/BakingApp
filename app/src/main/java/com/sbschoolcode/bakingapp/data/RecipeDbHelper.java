@@ -11,14 +11,15 @@ import com.sbschoolcode.bakingapp.data.DbContract.StepsEntry;
 class RecipeDbHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "recipes_database";
-    private static final int DATABASE_VERSION = 15;
+    private static final int DATABASE_VERSION = 18;
 
     private static final String CREATE_RECIPES_TABLE =
             "CREATE TABLE " + RecipesEntry.TABLE_NAME + " (" +
                     RecipesEntry._ID + " INTEGER PRIMARY KEY, " +
                     RecipesEntry.COLUMN_API_ID + " INTEGER UNIQUE, " +
                     RecipesEntry.COLUMN_RECIPE_NAME + " TEXT, " +
-                    RecipesEntry.COLUMN_SERVINGS + " INTEGER)";
+                    RecipesEntry.COLUMN_SERVINGS + " INTEGER, " +
+                    RecipesEntry.COLUMN_IMAGE_URL + " TEXT)";
 
     private static final String CREATE_INGREDIENTS_TABLE =
             "CREATE TABLE " + IngredientsEntry.TABLE_NAME + " (" +
@@ -35,7 +36,8 @@ class RecipeDbHelper extends SQLiteOpenHelper {
                     StepsEntry.COLUMN_STEP_ID + " INTEGER, " +
                     StepsEntry.COLUMN_SHORT_DESC + " TEXT, " +
                     StepsEntry.COLUMN_DESCRIPTION + " TEXT, " +
-                    StepsEntry.COLUMN_VIDEO_URL + " TEXT)";
+                    StepsEntry.COLUMN_VIDEO_URL + " TEXT, " +
+                    StepsEntry.COLUMN_THUMBNAIL_URL + " TEXT)";
 
     private static final String DROP_TABLE = "DROP TABLE IF EXISTS ";
 

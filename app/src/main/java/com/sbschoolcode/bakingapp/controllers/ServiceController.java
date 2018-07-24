@@ -55,11 +55,10 @@ public class ServiceController {
      * Start building a recipe item to pass down stream.
      *
      * @param ctx    The context to use to stat the service.
-     * @param intent An intent containing setup details for the service.
      */
-    public void startBuildRecipeItem(Context ctx, Intent intent) {
+    public void startBuildRecipeItem(Context ctx, int index) {
         BuildRecipeItemService.enqueueWork(ctx, BuildRecipeItemService.class,
-                AppConstants.GET_RECIPE_ITEM_JOB_ID, intent);
+                AppConstants.GET_RECIPE_ITEM_JOB_ID, new Intent().putExtra(AppConstants.INTENT_EXTRA_RECIPE_API_INDEX, index));
     }
 
     /**
@@ -79,7 +78,6 @@ public class ServiceController {
      * @param ctx The context to use to start the service.
      */
     public void initDownloadOrSkip(Context ctx) {
-        Log.v("TESTING", "initDorSkip");
         Intent intent = new Intent();
         IsDatabaseInitializedService.enqueueWork(ctx, IsDatabaseInitializedService.class, AppConstants.IS_DB_INITIALIZED_JOB_ID, intent);
     }

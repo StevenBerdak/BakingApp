@@ -1,6 +1,7 @@
 package com.sbschoolcode.bakingapp.ui.recipe.steps;
 
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,14 +16,14 @@ import com.sbschoolcode.bakingapp.AppUtils;
 import com.sbschoolcode.bakingapp.R;
 import com.sbschoolcode.bakingapp.models.Ingredient;
 import com.sbschoolcode.bakingapp.models.Step;
-import com.sbschoolcode.bakingapp.ui.recipe.steps.detail.StepDetailsPagerFrag;
+import com.sbschoolcode.bakingapp.ui.recipe.details.StepDetailsPagerFrag;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class SelectStepFrag extends Fragment implements View.OnClickListener {
+public class StepsListFrag extends Fragment implements View.OnClickListener {
 
     @BindView(R.id.steps_recycler_view)
     RecyclerView mStepsRecyclerView;
@@ -63,18 +64,15 @@ public class SelectStepFrag extends Fragment implements View.OnClickListener {
                 getActivity().getSupportFragmentManager().popBackStack();
             }
 
-            StepsAdapter stepsAdapter = new StepsAdapter(this);
+            StepsListAdapter stepsListAdapter = new StepsListAdapter(this);
 
             mStepsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            mStepsRecyclerView.setAdapter(stepsAdapter);
+            mStepsRecyclerView.setAdapter(stepsListAdapter);
 
-            stepsAdapter.swapArrays(mStepsList, mIngredientsList);
+            stepsListAdapter.swapArrays(mStepsList, mIngredientsList);
         }
 
-        if (savedInstanceState == null && AppUtils.detailIsLoaded(getContext()))
-            loadDetailFragment(AppUtils.lastDetailLoaded(getContext()));
-        else if (mIsLargeLayout)
-            loadDetailFragment(AppUtils.lastDetailLoaded(getContext()));
+        if (mIsLargeLayout) loadDetailFragment(0);
     }
 
     /**
@@ -83,15 +81,18 @@ public class SelectStepFrag extends Fragment implements View.OnClickListener {
      * @param index The index of the detail from the details list.
      */
     private void loadDetailFragment(int index) {
+        PreferenceManager
+                .getDefaultSharedPreferences(getContext())
+                .edit()
+                .putInt(AppConstants.PREF_STEP_INDEX, index)
+                .apply();
 
         Fragment detailFragment = new StepDetailsPagerFrag();
 
-        AppUtils.setPreferenceDetailLoaded(getContext(), index, true);
-
-        Bundle stepBundle = new Bundle();
-        stepBundle.putInt(AppConstants.BUNDLE_EXTRA_STEP_INDEX, index);
-        stepBundle.putAll(getArguments());
-        detailFragment.setArguments(stepBundle);
+        Bundle detailBundle = new Bundle();
+        detailBundle.putAll(getArguments());
+        detailBundle.putInt(AppConstants.BUNDLE_EXTRA_STEP_DETAIL_INDEX, index);
+        detailFragment.setArguments(detailBundle);
         if (getFragmentManager() != null) {
             if (mIsLargeLayout) {
                 getFragmentManager().beginTransaction()

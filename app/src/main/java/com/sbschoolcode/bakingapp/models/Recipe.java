@@ -8,11 +8,13 @@ public class Recipe implements Parcelable {
     public final int apiId;
     public final String name;
     public final int servings;
+    public final String imageUrl;
 
-    public Recipe(int apiId, String name, int servings) {
+    public Recipe(int apiId, String name, int servings, String imageUrl) {
         this.apiId = apiId;
         this.name = name;
         this.servings = servings;
+        this.imageUrl = imageUrl;
     }
 
     public String toString() {
@@ -23,6 +25,7 @@ public class Recipe implements Parcelable {
         apiId = in.readInt();
         name = in.readString();
         servings = in.readInt();
+        imageUrl = in.readString();
     }
 
     public static final Creator<Recipe> CREATOR = new Creator<Recipe>() {
@@ -47,5 +50,6 @@ public class Recipe implements Parcelable {
         dest.writeInt(apiId);
         dest.writeString(name);
         dest.writeInt(servings);
+        dest.writeString(imageUrl);
     }
 }

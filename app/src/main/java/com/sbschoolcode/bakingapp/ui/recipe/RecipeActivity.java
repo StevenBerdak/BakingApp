@@ -7,16 +7,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.sbschoolcode.bakingapp.AppConstants;
-import com.sbschoolcode.bakingapp.AppUtils;
 import com.sbschoolcode.bakingapp.R;
+import com.sbschoolcode.bakingapp.controllers.ExoController;
 import com.sbschoolcode.bakingapp.controllers.ServiceController;
 import com.sbschoolcode.bakingapp.models.Recipe;
-import com.sbschoolcode.bakingapp.ui.recipe.steps.SelectStepFrag;
+import com.sbschoolcode.bakingapp.ui.recipe.steps.StepsListFrag;
 import com.sbschoolcode.bakingapp.widget.BakingWidget;
 
 import butterknife.BindView;
@@ -42,42 +43,43 @@ public class RecipeActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         if (savedInstanceState == null) {
-            ServiceController.getInstance().startBuildRecipeItem(this, getIntent());
+            int index = getIntent().getIntExtra(AppConstants.INTENT_EXTRA_RECIPE_API_INDEX, -1);
+            ServiceController.getInstance().startBuildRecipeItem(this, index);
         }
-
-        AppUtils.setPreferenceRecipeLoaded(this, getIntent().getIntExtra(AppConstants.INTENT_EXTRA_RECIPE_API_INDEX, -1),
-                getIntent().getStringExtra(AppConstants.INTENT_EXTRA_RECIPE), true);
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if (mCurrentBundle != null) outState.putAll(mCurrentBundle);
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(mRecipeReceiver);
+        ExoController.getInstance().releaseExoPlayer();
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        mCurrentBundle = new Bundle();
-        mCurrentBundle.putParcelable(AppConstants.INTENT_EXTRA_RECIPE,
-                savedInstanceState.getParcelable(AppConstants.INTENT_EXTRA_RECIPE));
-        mCurrentBundle.putParcelableArrayList(AppConstants.INTENT_EXTRA_INGREDIENTS_LIST,
-                savedInstanceState.getParcelableArrayList(AppConstants.INTENT_EXTRA_INGREDIENTS_LIST));
-        mCurrentBundle.putParcelableArrayList(AppConstants.INTENT_EXTRA_STEPS_LIST,
-                savedInstanceState.getParcelableArrayList(AppConstants.INTENT_EXTRA_STEPS_LIST));
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(mRecipeReceiver, mRecipeIntentFilter);
+        ExoController.getInstance().prepareExoPlayer(this);
     }
 
     /**
      * Load the steps list.
      */
-    private void loadSteps() {
+    private void loadRecipeList() {
         Recipe recipe = mCurrentBundle.getParcelable(AppConstants.INTENT_EXTRA_RECIPE);
         if (recipe != null) {
             setTitle(recipe.name);
             updateWidget();
+            PreferenceManager
+                    .getDefaultSharedPreferences(this)
+                    .edit()
+                    .putInt(AppConstants.PREF_RECIPE_API_ID, recipe.apiId)
+                    .putInt(AppConstants.PREF_RECIPE_WIDGET_ID, recipe.apiId)
+                    .putString(AppConstants.PREF_RECIPE_LOADED_NAME, recipe.name)
+                    .apply();
         }
 
-        SelectStepFrag fragment = new SelectStepFrag();
+        StepsListFrag fragment = new StepsListFrag();
         fragment.setArguments(mCurrentBundle);
         getSupportFragmentManager().beginTransaction()
                 .add(mContentFrame.getId(), fragment, AppConstants.FRAGMENT_SELECT_A_STEP_TAG).commit();
@@ -94,24 +96,12 @@ public class RecipeActivity extends AppCompatActivity {
         sendBroadcast(updateWidgets);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        registerReceiver(mRecipeReceiver, mRecipeIntentFilter);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        unregisterReceiver(mRecipeReceiver);
-    }
 
     @Override
     public void onBackPressed() {
         if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
             getSupportFragmentManager().popBackStack();
         } else {
-            AppUtils.setPreferenceRecipeLoaded(this, -1, "", false);
             finish();
         }
     }
@@ -125,14 +115,6 @@ public class RecipeActivity extends AppCompatActivity {
         mRecipeIntentFilter.addAction(ACTION_RECIPE_QUERIED);
     }
 
-    /**
-     * Display a toast in case of error.
-     */
-    private void onError() {
-        Toast.makeText(RecipeActivity.this, R.string.error_loading_recipe, Toast.LENGTH_LONG).show();
-        finish();
-    }
-
     private class RecipeReceiver extends BroadcastReceiver {
 
         @Override
@@ -141,10 +123,12 @@ public class RecipeActivity extends AppCompatActivity {
 
             if (intent.getAction().equals(ACTION_RECIPE_QUERIED)) {
                 Recipe recipe = intent.getParcelableExtra(AppConstants.INTENT_EXTRA_RECIPE);
-                if (recipe == null) onError();
-                else {
+                if (recipe == null) {
+                    Toast.makeText(RecipeActivity.this, R.string.error_loading_recipe, Toast.LENGTH_LONG).show();
+                    finish();
+                } else {
                     mCurrentBundle = intent.getExtras();
-                    loadSteps();
+                    loadRecipeList();
                 }
             }
         }

@@ -41,12 +41,14 @@ public class InsertRecipesService extends JobIntentService {
                 int recipeApiId = recipeObject.optInt("id");
                 String recipeName = recipeObject.optString("name");
                 String recipeServings = recipeObject.optString("servings");
+                String recipeImageUrl = recipeObject.optString("image");
 
                 ContentValues recipeValues = new ContentValues();
 
                 recipeValues.put(DbContract.RecipesEntry.COLUMN_API_ID, recipeApiId);
                 recipeValues.put(DbContract.RecipesEntry.COLUMN_RECIPE_NAME, recipeName);
                 recipeValues.put(DbContract.RecipesEntry.COLUMN_SERVINGS, recipeServings);
+                recipeValues.put(DbContract.RecipesEntry.COLUMN_IMAGE_URL, recipeImageUrl);
 
                 recipesValuesArr.add(recipeValues);
 
@@ -82,16 +84,18 @@ public class InsertRecipesService extends JobIntentService {
 
                     stepsObject = stepsArray.getJSONObject(stepsIndex);
 
-                    int stepId = stepsObject.getInt("id");
-                    String shortDesc = stepsObject.getString("shortDescription");
-                    String description = stepsObject.getString("description");
-                    String videoUrl = stepsObject.getString("videoURL");
+                    int stepId = stepsObject.optInt("id");
+                    String shortDesc = stepsObject.optString("shortDescription");
+                    String description = stepsObject.optString("description");
+                    String videoUrl = stepsObject.optString("videoURL");
+                    String thumbnailUrl = stepsObject.optString("thumbnailURL");
 
                     stepsValues.put(DbContract.StepsEntry.COLUMN_PARENT_API_ID, recipeApiId);
                     stepsValues.put(DbContract.StepsEntry.COLUMN_STEP_ID, stepId);
                     stepsValues.put(DbContract.StepsEntry.COLUMN_SHORT_DESC, shortDesc);
                     stepsValues.put(DbContract.StepsEntry.COLUMN_DESCRIPTION, description);
                     stepsValues.put(DbContract.StepsEntry.COLUMN_VIDEO_URL, videoUrl);
+                    stepsValues.put(DbContract.StepsEntry.COLUMN_THUMBNAIL_URL, thumbnailUrl);
 
                     stepsValuesArr.add(stepsValues);
                 }

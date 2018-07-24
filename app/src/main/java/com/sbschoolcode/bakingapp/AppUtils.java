@@ -1,11 +1,8 @@
 package com.sbschoolcode.bakingapp;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.ImageView;
@@ -136,102 +133,5 @@ public class AppUtils {
         Handler handler = new Handler(Looper.getMainLooper());
         if (imageView != null)
             handler.post(() -> imageView.setImageResource(resourceId));
-    }
-
-    /**
-     * Apply a change in the shared preferences for the loaded recipe.
-     *
-     * @param ctx      Context to use.
-     * @param apiId    The api id of the recipe.
-     * @param name     The name of the recipe.
-     * @param isLoaded Whether the recipe is loaded or not.
-     */
-    @SuppressLint("ApplySharedPref")
-    public static void setPreferenceRecipeLoaded(Context ctx, int apiId, String name, boolean isLoaded) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
-        if (isLoaded) {
-            prefs.edit().putInt(AppConstants.PREF_RECIPE_LOADED_API_INDEX, apiId)
-                    .putInt(AppConstants.PREF_RECIPE_WIDGET_ID, apiId)
-                    .putString(AppConstants.PREF_RECIPE_LOADED_NAME, name)
-                    .putBoolean(AppConstants.PREF_RECIPE_IS_LOADED, true).apply();
-        } else {
-            prefs.edit().putInt(AppConstants.PREF_RECIPE_LOADED_API_INDEX, -1)
-                    .putBoolean(AppConstants.PREF_RECIPE_IS_LOADED, false).commit();
-
-        }
-    }
-
-    /**
-     * Apply and change in the shared preferences for the loaded recipe steps detail.
-     *
-     * @param ctx         Context to use.
-     * @param detailIndex The index of the detail item.
-     * @param isLoaded    Whether the detail is loaded or not.
-     */
-    @SuppressLint("ApplySharedPref")
-    public static void setPreferenceDetailLoaded(Context ctx, int detailIndex, boolean isLoaded) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
-        if (isLoaded) {
-            prefs.edit().putInt(AppConstants.PREF_DETAILS_LAST_LOADED, detailIndex)
-                    .putBoolean(AppConstants.PREF_DETAILS_IS_LOADED, true).apply();
-        } else {
-            prefs.edit().putInt(AppConstants.PREF_DETAILS_LAST_LOADED, -1)
-                    .putBoolean(AppConstants.PREF_DETAILS_IS_LOADED, false).commit();
-        }
-    }
-
-    /**
-     * The last loaded detail index.
-     *
-     * @param ctx Context to use.
-     * @return The index of the detail.
-     */
-    public static int lastDetailLoaded(Context ctx) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
-        return prefs.getInt(AppConstants.PREF_DETAILS_LAST_LOADED, -1);
-    }
-
-    /**
-     * The last loaded recipe api id.
-     *
-     * @param ctx Context to use.
-     * @return The api id of the recipe.
-     */
-    public static int lastRecipeLoaded(Context ctx) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
-        return prefs.getInt(AppConstants.PREF_RECIPE_LOADED_API_INDEX, -1);
-    }
-
-    /**
-     * The last loaded recipe name.
-     *
-     * @param ctx Context to use.
-     * @return Human readable name for the last recipe loaded.
-     */
-    public static String lastRecipeLoadedByName(Context ctx) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
-        return prefs.getString(AppConstants.PREF_RECIPE_LOADED_NAME, "");
-    }
-
-    /**
-     * Check if a recipe is loaded.
-     *
-     * @param ctx Context to use.
-     * @return True if a recipe is loaded.
-     */
-    public static boolean recipeIsLoaded(Context ctx) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
-        return prefs.getBoolean(AppConstants.PREF_RECIPE_IS_LOADED, false);
-    }
-
-    /**
-     * Check if a detail is loaded.
-     *
-     * @param ctx Context to use.
-     * @return True if a detail is loaded.
-     */
-    public static boolean detailIsLoaded(Context ctx) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
-        return prefs.getBoolean(AppConstants.PREF_DETAILS_IS_LOADED, false);
     }
 }

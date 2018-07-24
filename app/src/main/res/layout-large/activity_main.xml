@@ -51,7 +51,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
-        android:onClick="manualLoadData"
+        android:onClick="onClickRetry"
         android:text="@string/button_retry"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"

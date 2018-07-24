@@ -1,4 +1,4 @@
-package com.sbschoolcode.bakingapp.ui.recipe.steps.detail;
+package com.sbschoolcode.bakingapp.ui.recipe.details;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import com.sbschoolcode.bakingapp.AppConstants;
 import com.sbschoolcode.bakingapp.AppUtils;
 import com.sbschoolcode.bakingapp.R;
-import com.sbschoolcode.bakingapp.controllers.ExoController;
 import com.sbschoolcode.bakingapp.models.Step;
 
 import java.util.ArrayList;
@@ -24,8 +23,6 @@ public class StepDetailsPagerFrag extends Fragment {
 
     @BindView(R.id.step_details_view_pager)
     ViewPager mViewPager;
-    private ExoController mExoController;
-    private ArrayList<Step> mStepsList;
 
     @Nullable
     @Override
@@ -36,15 +33,13 @@ public class StepDetailsPagerFrag extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
-        mExoController = ExoController.getInstance();
-        mExoController.prepareExoPlayer(getContext());
 
         if (getArguments() != null) {
-            mStepsList = getArguments().getParcelableArrayList(AppConstants.INTENT_EXTRA_STEPS_LIST);
-            int currentIndex = getArguments().getInt(AppConstants.BUNDLE_EXTRA_STEP_INDEX);
+            ArrayList<Step> mStepsList = getArguments().getParcelableArrayList(AppConstants.INTENT_EXTRA_STEPS_LIST);
             if (mStepsList != null) {
-                mViewPager.setAdapter(new StepDetailsPagerAdapter(getChildFragmentManager(), mStepsList, currentIndex));
-                if (currentIndex != mViewPager.getCurrentItem()) mViewPager.setCurrentItem(currentIndex);
+                StepDetailsPagerAdapter adapter = new StepDetailsPagerAdapter(getChildFragmentManager(), mStepsList);
+                mViewPager.setAdapter(adapter);
+                mViewPager.setCurrentItem(getArguments().getInt(AppConstants.BUNDLE_EXTRA_STEP_DETAIL_INDEX, 0));
             } else {
                 AppUtils.makeLongToast(getContext(), getString(R.string.error_recipe_data));
                 if (getFragmentManager() != null) {
@@ -54,29 +49,6 @@ public class StepDetailsPagerFrag extends Fragment {
                 }
             }
         }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        mExoController.pausePlayback();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        //Resume ExoPlayer playback
-        int current = AppUtils.lastDetailLoaded(getContext());
-        if (current > -1 && !mStepsList.get(current).videoUrl.equals(""))
-        mExoController.startPlayback();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mExoController.releaseExoPlayer();
-        mExoController = null;
     }
 }
 

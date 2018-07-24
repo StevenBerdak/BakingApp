@@ -7,8 +7,6 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
@@ -20,14 +18,12 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.sbschoolcode.bakingapp.AppConstants;
-import com.sbschoolcode.bakingapp.AppUtils;
 import com.sbschoolcode.bakingapp.R;
 import com.sbschoolcode.bakingapp.controllers.ServiceController;
 import com.sbschoolcode.bakingapp.data.DataUtils;
@@ -66,34 +62,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         initReceiver();
         mServiceController = ServiceController.getInstance();
 
-        mMainAdapter = new MainAdapter(this);
-
-        /* Init view components. */
         boolean isLargeScreen = null != findViewById(R.id.layout_large_spy);
+
+        mMainAdapter = new MainAdapter(this);
 
         GridLayoutManager mGridLayoutManager = new GridLayoutManager(this, isLargeScreen ? 3 : 1);
 
         mRecipeListRecyclerView.setLayoutManager(mGridLayoutManager);
         mRecipeListRecyclerView.setAdapter(mMainAdapter);
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        AppUtils.lastRecipeLoaded(this);
-        outState.putInt(AppConstants.BUNDLE_RECIPE_LOADED_ID, AppUtils.lastRecipeLoaded(this));
-        outState.putString(AppConstants.BUNDLE_RECIPE_LOADED_NAME, AppUtils.lastRecipeLoadedByName(this));
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        if (AppUtils.recipeIsLoaded(this)) {
-            String recipeLoadedName = savedInstanceState.getString(AppConstants.BUNDLE_RECIPE_LOADED_NAME, "");
-            int recipeLoadedId = savedInstanceState.getInt(AppConstants.BUNDLE_RECIPE_LOADED_ID, -1);
-            Handler handler = new Handler(Looper.getMainLooper());
-            handler.post(() -> loadRecipeActivity(recipeLoadedId, recipeLoadedName));
-        }
     }
 
     @Override
@@ -144,20 +120,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onClick(View v) {
-        TextView recipeNameTv = v.findViewById(R.id.recipe_list_item_name_tv);
-        loadRecipeActivity((int) v.getTag(), recipeNameTv.getText().toString());
+        loadRecipeActivity((int) v.getTag());
     }
 
     /**
      * Load the recipe activity for the selected recipe.
      *
      * @param apiTag The api id from the tag attached to the view selected.
-     * @param name   The human readable name of the recipe.
      */
-    private void loadRecipeActivity(int apiTag, String name) {
-        AppUtils.setPreferenceRecipeLoaded(this, apiTag, name, true);
+    private void loadRecipeActivity(int apiTag) {
         Intent recipeActivity = new Intent(this, RecipeActivity.class);
-        recipeActivity.putExtra(AppConstants.INTENT_EXTRA_RECIPE, name);
         recipeActivity.putExtra(AppConstants.INTENT_EXTRA_RECIPE_API_INDEX, apiTag);
         startActivity(recipeActivity);
     }
@@ -165,9 +137,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     /**
      * Manually initiate a data download.
      *
-     * @param view Necessary to use inClick property.
+     * @param view Necessary to use for onClick property.
      */
-    public void manualLoadData(View view) {
+    public void onClickRetry(View view) {
         mMainProgressBar.setVisibility(View.VISIBLE);
         mNoNetworkButton.setVisibility(View.GONE);
         mNoNetworkTextView.setVisibility(View.GONE);

@@ -11,6 +11,7 @@ public final class DbContract {
         public static final String COLUMN_API_ID = "api_id";
         public static final String COLUMN_RECIPE_NAME = "recipe_name";
         public static final String COLUMN_SERVINGS = "servings";
+        public static final String COLUMN_IMAGE_URL = "image_url";
     }
 
     public static class IngredientsEntry implements BaseColumns {
@@ -28,5 +29,6 @@ public final class DbContract {
         public static final String COLUMN_SHORT_DESC = "short_desc";
         public static final String COLUMN_DESCRIPTION = "description";
         public static final String COLUMN_VIDEO_URL = "video_url";
+        public static final String COLUMN_THUMBNAIL_URL = "thumbnail_url";
     }
 }
