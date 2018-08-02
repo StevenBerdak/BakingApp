@@ -14,6 +14,6 @@ We were required to provide responsive views based on screen size, to provide a 
 
 ## Images
 <p align="center">
-<img src="https://github.com/StevenBerdak/BakingApp/blob/master/readme/app_screenshots_1.png" width=400 /> <img src="https://github.com/StevenBerdak/BakingApp/blob/master/readme/app_screenshots_2.png" width=400 /> <img src="https://github.com/StevenBerdak/BakingApp/blob/master/readme/app_screenshots_3.png" width=400 /> <img src="https://github.com/StevenBerdak/BakingApp/blob/master/readme/app_screenshots_4.png" width=400 />
+<img src="https://github.com/StevenBerdak/BakingApp/blob/master/readme/app_screenshots_1.png" width=300 /> <img src="https://github.com/StevenBerdak/BakingApp/blob/master/readme/app_screenshots_2.png" width=300 /> <img src="https://github.com/StevenBerdak/BakingApp/blob/master/readme/app_screenshots_3.png" width=300 /> <img src="https://github.com/StevenBerdak/BakingApp/blob/master/readme/app_screenshots_4.png" width=300 />
 </p>
 
